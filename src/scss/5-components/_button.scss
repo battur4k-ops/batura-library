@@ -1,0 +1,106 @@
+/* ============================================================
+   5-COMPONENTS / _BUTTON.SCSS
+   Batura Library | System Synced v12.2 [Symmetry Lock]
+   ============================================================ */
+
+.ui-button {
+  /* 1. ГЕОМЕТРИЧЕСКАЯ БАЗА */
+  --btn-radius: calc(var(--radius-master) * 0.4);
+  
+  /* Подключаем материал: он ищет --btn-radius-override для кастомизации */
+  @include glass-surface("btn", var(--btn-radius));
+  @include glass-light-layer("btn"); 
+
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  
+  /* Базовые размеры из _ui.scss */
+  height: var(--ui-h-btn);
+  padding-inline: var(--ui-p-btn);
+  position: relative;
+  
+  /* ТИПОГРАФИКА */
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--ui-fs-btn);
+  text-transform: uppercase;
+  color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+  line-height: 1;
+  
+  cursor: pointer;
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  
+  /* Стабилизация для GPU */
+  -webkit-font-smoothing: antialiased;
+  transform: translate3d(0, 0, 0.1px);
+
+  transition: 
+    var(--t-material), 
+    var(--t-text),
+    transform var(--d-fast) var(--e-out),
+    border-radius var(--d-fast) var(--e-out);
+
+  &::before { transition: opacity var(--d-fast) var(--e-out); }
+
+  /* --- INTERACTIONS --- */
+  &:hover {
+    --btn-bg-op: var(--s-glass-op-active); 
+    --btn-stroke-op: var(--s-stroke-op-active);
+    --btn-glare-op: 1; 
+    color: rgba(var(--p-white-rgb), var(--s-text-op-hover));
+  }
+
+  /* --- MODIFIER: LOGO (The Symmetry Lock) --- */
+  &--logo {
+    /* 
+       [LAW:GEOMETRIC_COHESION]
+       aspect-ratio гарантирует, что ширина ВСЕГДА равна высоте.
+       padding: 0 убирает боковое распирание.
+    */
+    aspect-ratio: 1 / 1; 
+    padding-inline: 0;
+    width: auto; // Позволяет высоте диктовать размер
+
+    .b-logo {
+      height: 55%; // Оптический размер знака внутри квадрата
+      width: 55%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: inherit;
+      
+      svg {
+        height: 100%;
+        width: auto;
+        /* Оптическая компенсация формы буквы B */
+        transform: translate3d(var(--logo-balance-x), 0, 0);
+      }
+    }
+  }
+
+  /* --- CONTEXT: NAVBAR (Dynamic Scaling) --- */
+  .b-navbar & {
+    /* Навбар диктует высоту — aspect-ratio сделает из неё квадрат */
+    height: var(--nav-content-h);
+    width: var(--nav-content-h);
+    min-width: var(--nav-content-h);
+    padding: 0;
+
+    /* Применяем вычисленный радиус навбара */
+    --btn-radius-override: var(--nav-inner-radius);
+
+    --btn-bg-op: 0.005; 
+    --btn-stroke-op: var(--s-stroke-op-idle);
+
+    /* Синхронизируем движение с расширением навбара */
+    transition: 
+      var(--t-material),
+      var(--t-text),
+      border-radius var(--d-morph) var(--e-out),
+      height var(--d-morph) var(--e-out),
+      width var(--d-morph) var(--e-out);
+  }
+}

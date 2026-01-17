@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expressions | Batura Library</title>
+    
+    <!-- SYSTEM FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- CORE ARCHITECTURE (Fixed relative path) -->
+    <link rel="stylesheet" href="../src/scss/main.css">
+</head>
+<body class="is-loading" data-page="expressions">
+
+    <!-- LAYER: BACKGROUND SHADER -->
+    <canvas id="liquid-bg-canvas"></canvas>
+
+    <!-- LAYER: UNIFIED NAVIGATION -->
+    <batura-navbar></batura-navbar>
+
+    <div id="app-wrapper">
+        
+        <!-- MAIN APP FLOW -->
+        <main id="app-root">
+            
+            <!-- SECTION 1: HERO & FILTERS -->
+            <section class="l-container">
+                <div class="l-flow">
+                    <span class="text-data">Automation // AE_Expressions</span>
+                    <h1 class="text-hero">Expressions</h1>
+                    <p class="text-body">
+                        Библиотека оптимизированных выражений для After Effects. <br>
+                        Математика движения, переведенная в чистый код для ваших проектов.
+                    </p>
+
+                    <!-- FILTER CONTAINER: Сюда JS-контроллер вставит теги -->
+                    <div id="filter-container" style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-md);">
+                        <!-- Dynamic Tags Injected Here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: DYNAMIC GRID -->
+            <section class="l-container">
+                <!-- 
+                    EXPRESSIONS GRID: 
+                    Сюда ExpressionManager будет рендерить карточки из своего массива данных.
+                -->
+                <div id="expressions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-md);">
+                    <!-- Dynamic Cards Injected Here -->
+                </div>
+            </section>
+
+            <!-- UNIFIED FOOTER -->
+            <batura-footer></batura-footer>
+
+        </main>
+
+        <!-- 
+            LAYER: INTERFACE OVERLAY 
+            Вынесен за пределы <main>, чтобы мы могли скрыть основной контент,
+            оставив интерфейс активным поверх шейдера.
+        -->
+        <div id="interface-overlay" class="b-interface-overlay">
+            <div class="b-interface-overlay__content">
+                <div class="l-flow" style="align-items: center; text-align: center;">
+                    <span class="text-data">// SYSTEM_INTERFACE_v1.0</span>
+                    <h2 class="text-heading">Laboratory <br> Interface</h2>
+                    <p class="text-body">Здесь будут располагаться ваши контроллеры и превью кода.</p>
+                    
+                    <!-- Временная кнопка закрытия для теста (потом уберем) -->
+                    <button class="ui-button" onclick="window.exprManager.closeInterface()" style="margin-top: var(--space-lg);">
+                        Close Lab
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS ASSETS (Fixed relative paths) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="../src/js/background.js"></script>
+    <!-- 
+        ГЛАВНЫЙ ВХОД:
+        Убедись, что в main.js импортированы:
+        - footer.js
+        - navbar.js
+        - expression-filter.js
+        - expression-manager.js
+    -->
+    <script src="../src/js/main.js" type="module"></script>
+</body>
+</html>

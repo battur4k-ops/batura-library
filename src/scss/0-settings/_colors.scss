@@ -1,0 +1,47 @@
+/* ============================================================
+   0-SETTINGS / _COLORS.SCSS
+   Batura Library | Shader DNA v10.0 [Chromatophores]
+   ============================================================ */
+
+:root {
+  /* --- 1. PRIMITIVES (Сырье) --- */
+  --p-black-rgb: 0, 0, 0;
+  --p-white-rgb: 255, 255, 255;
+
+  /* Акцентные триплеты */
+  --p-blue-rgb: 0, 102, 255;
+  --p-purple-rgb: 157, 0, 255;
+  --p-green-rgb: 0, 255, 170;
+  --p-red-rgb: 255, 34, 68;
+
+  /* --- 2. SHADER DNA (Специфические токены для JS) --- */
+  
+  /* Blue Theme */
+  --p-blue-solid: rgb(0, 102, 255);
+  --p-blue-deep:  rgb(0, 20, 80);
+
+  /* Purple Theme */
+  --p-purple-solid: rgb(157, 0, 255);
+  --p-purple-deep:  rgb(45, 0, 80);
+
+  /* Green Theme */
+  --p-green-solid: rgb(0, 255, 170);
+  --p-green-deep:  rgb(0, 50, 40);
+
+  /* Red Theme */
+  --p-red-solid: rgb(255, 34, 68);
+  --p-red-deep:  rgb(60, 0, 15);
+
+  /* --- 3. SEMANTICS (Смысл) --- */
+  
+  --theme-accent-rgb: var(--p-blue-rgb);
+  --color-bg: rgb(var(--p-black-rgb));
+  
+  --color-text-main: rgb(var(--p-white-rgb));
+  --color-text-dim: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+  
+  --s-text-op-idle: 0.45;
+  --s-text-op-hover: 1.0;
+
+  --m-glass-base-rgb: var(--p-white-rgb);
+}

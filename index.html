@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batura Library | Master System v6.7</title>
+    
+    <!-- SYSTEM FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- CORE ARCHITECTURE (ITCSS) -->
+    <link rel="stylesheet" href="src/scss/main.css">
+</head>
+<body class="is-loading">
+
+    <!-- LAYER: BG SHADER (Three.js Sync) -->
+    <canvas id="liquid-bg-canvas"></canvas>
+
+    <!-- 
+        UNIFIED NAVBAR COMPONENT:
+        Вся верстка навигации, логотип и поиск теперь внутри navbar.js.
+        JS-контроллер NavigationController по-прежнему управляет морфингом через ID #mainNav.
+    -->
+    <batura-navbar></batura-navbar>
+
+    <div id="app-wrapper">
+        <main id="app-root">
+            
+            <!-- SECTION: HERO -->
+            <section class="l-container">
+                <div class="l-flow">
+                    <span class="text-data">Motion Design // Professional Hub</span>
+                    <h1 class="text-hero">Batura <br> Library</h1>
+                    <p class="text-body">
+                        Профессиональный хаб для автоматизации моушн-дизайна. 
+                        Мы создаем инструменты, которые забирают рутину на себя.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECTION: ACCORDION (INTERACTIVE CORE) -->
+            <section class="l-container">
+                <div class="b-accordion" id="mainAccordion">
+                    
+                    <div class="b-card is-active" data-index="0">
+                        <div class="b-card__viewport">
+                            <div class="b-card__content l-flow">
+                                <span class="text-data">// AE_EXPRESSIONS</span>
+                                <h3 class="text-heading">Expressions</h3>
+                                <p class="text-body">Оптимизированный код для умной анимации. Математика движения.</p>
+                                <a href="#" class="ui-button">Initialize</a>
+                            </div>
+                        </div>
+                        <div class="b-card__index text-data">01</div>
+                        <div class="b-card__label text-data">Automation</div>
+                    </div>
+
+                    <div class="b-card" data-index="1">
+                        <div class="b-card__viewport">
+                            <div class="b-card__content l-flow">
+                                <span class="text-data">// EXTEND_SCRIPT</span>
+                                <h3 class="text-heading">Scripts</h3>
+                                <p class="text-body">Инструменты для ускорения ежедневного пайплайна разработки.</p>
+                                <a href="#" class="ui-button">View Scripts</a>
+                            </div>
+                        </div>
+                        <div class="b-card__index text-data">02</div>
+                        <div class="b-card__label text-data">Workflow</div>
+                    </div>
+
+                    <div class="b-card" data-index="2">
+                        <div class="b-card__viewport">
+                            <div class="b-card__content l-flow">
+                                <span class="text-data">// AE_PLUGINS</span>
+                                <h3 class="text-heading">Plugins</h3>
+                                <p class="text-body">Расширение возможностей софта. Глубокая интеграция.</p>
+                                <a href="#" class="ui-button">Check Plugins</a>
+                            </div>
+                        </div>
+                        <div class="b-card__index text-data">03</div>
+                        <div class="b-card__label text-data">System_Core</div>
+                    </div>
+
+                    <div class="b-card" data-index="3">
+                        <div class="b-card__viewport">
+                            <div class="b-card__content l-flow">
+                                <span class="text-data">// TECHNICAL_DATA</span>
+                                <h3 class="text-heading">Guides</h3>
+                                <p class="text-body">Глубокие разборы техник и методологий моушн-дизайна.</p>
+                                <a href="#" class="ui-button">Watch Data</a>
+                            </div>
+                        </div>
+                        <div class="b-card__index text-data">04</div>
+                        <div class="b-card__label text-data">Education</div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 
+                UNIFIED FOOTER COMPONENT:
+                Минималистичный дизайн v6.6 с гравитационным якорем логотипа.
+            -->
+            <batura-footer></batura-footer>
+
+        </main>
+    </div>
+
+    <!-- JS ASSETS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="src/js/background.js"></script>
+    
+    <!-- 
+        ГЛАВНЫЙ ВХОД:
+        Должен содержать импорты компонентов:
+        import './components/navbar.js';
+        import './components/footer.js';
+    -->
+    <script src="src/js/main.js" type="module"></script>
+</body>
+</html>

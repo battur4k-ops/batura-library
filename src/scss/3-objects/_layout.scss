@@ -1,0 +1,85 @@
+/* ============================================================
+   3-OBJECTS / _LAYOUT.SCSS
+   Batura Library | Master System v7.0 [Structural Backbone]
+   ============================================================ */
+
+/**
+ * 1. FLOW ENGINE
+ * Автоматизация вертикальных ритмов. 
+ * Гарантирует, что между блоками всегда системный зазор.
+ */
+@mixin flow-engine($gap: var(--space-md)) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  
+  & > * + * { 
+    margin-top: $gap; 
+  }
+
+  /* Оптическая компенсация для типографики в потоке */
+  & > .text-data + .text-hero,
+  & > .text-data + .text-heading,
+  & > .text-hero + .text-body,
+  & > .text-heading + .text-body {
+    margin-top: var(--space-xs);
+  }
+}
+
+.l-flow { 
+  @include flow-engine; 
+}
+
+/**
+ * 2. APP WRAPPER
+ * Глобальная оболочка приложения. 
+ * Центрирует весь контент относительно физического экрана.
+ */
+#app-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* Уровень Google: предотвращаем горизонтальный сдвиг при открытии оверлеев */
+    align-items: center; 
+}
+
+/**
+ * 3. APP ROOT ( Spine )
+ * Главный вертикальный позвоночник.
+ */
+#app-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  
+  /* 
+     ФОРМУЛА "ВОЗДУХА":
+     Верхний отступ учитывает высоту навбара, его положение и геройский зазор.
+  */
+  padding-top: calc(var(--nav-h) + var(--nav-top) + var(--hero-offset));
+  padding-bottom: var(--p-page-bottom);
+  gap: var(--s-block-gap);
+  box-sizing: border-box;
+}
+
+/**
+ * 4. CONTAINER
+ * Ограничитель ширины и математический центр системы.
+ */
+.l-container {
+  width: 100%;
+  
+  /* [LAW:SINGLE_SOURCE_OF_TRUTH] - Ссылка на _spacing.scss */
+  max-width: var(--layout-max-width);
+  
+  /* Истинное центрирование по оси X=0 */
+  margin-inline: auto;
+  
+  /* Системный буфер от краев экрана */
+  padding-inline: var(--p-site-side);
+  
+  box-sizing: border-box;
+  position: relative;
+}

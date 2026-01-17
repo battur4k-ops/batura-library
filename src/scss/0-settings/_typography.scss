@@ -1,0 +1,15 @@
+:root {
+    /* --- 1. FONT FAMILIES --- */
+    --font-main: "Inter", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+
+    /* --- 2. FLUID SIZES (clamp engine) --- */
+    --fs-h1: clamp(40px, 8vw, 92px);      
+    --fs-h2: clamp(28px, 4vw, 54px);      
+    --fs-body: clamp(14px, 1.1vw, 16px);  
+    --fs-caption: 11px;                   
+
+    /* --- 3. OPTICAL SPACING --- */
+    --lh-body: 1.6;
+    --ls-caption: 0.15em;
+}

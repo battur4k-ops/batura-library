@@ -1,0 +1,61 @@
+/* ============================================================
+   4-MATERIALS / _GLASS.SCSS
+   Batura Library | Master System v11.6 [Slot-Logic Fix]
+   ============================================================ */
+
+@mixin glass-surface($scope, $radius: var(--radius-master)) {
+  position: relative;
+  
+  /* Принудительно используем переменную радиуса из компонента */
+  border-radius: var(--#{$scope}-radius, #{$radius});
+  
+  /* Инициализация слотов (Symmetry Lock) */
+  --#{$scope}-bg-op: var(--s-glass-op-base);
+  --#{$scope}-stroke-op: var(--s-stroke-op-idle);
+
+  /* 
+     [FIX] Миксин теперь не перезаписывает переменную блюра, 
+     а берет её из компонента. Если её там нет — берет глобальный токен.
+  */
+  background-color: rgba(var(--m-glass-base-rgb), var(--#{$scope}-bg-op));
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--#{$scope}-stroke-op));
+  
+  backdrop-filter: blur(var(--#{$scope}-blur, var(--s-glass-blur)));
+  -webkit-backdrop-filter: blur(var(--#{$scope}-blur, var(--s-glass-blur)));
+  
+  /* [ANTI-JITTER] Стабилизация для GPU */
+  transform: translate3d(0, 0, 0.1px); 
+  backface-visibility: hidden;
+  border: none;
+  overflow: hidden;
+
+  /* Метроном системы */
+  transition: 
+    background-color var(--d-fast) var(--e-out),
+    box-shadow var(--d-fast) var(--e-out),
+    border-radius var(--d-morph) var(--e-out),
+    backdrop-filter var(--d-morph) var(--e-out); // Синхронизировали с морфингом
+}
+
+@mixin glass-light-layer($scope) {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(circle at 50% 0%, rgba(var(--m-glass-base-rgb), var(--s-glare-op-hover)), transparent);
+    box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--s-stroke-op-active));
+    opacity: var(--#{$scope}-glare-op, 0);
+    transition: opacity var(--d-fast) var(--e-out);
+  }
+}
+
+@mixin hover-cascade-trigger($child-scope: "btn") {
+  &:hover:not(.is-static):not(.b-card--static) {
+    --#{$child-scope}-bg-op: var(--s-glass-op-hover);
+    --#{$child-scope}-stroke-op: var(--s-stroke-op-hover);
+    --#{$child-scope}-glare-op: 0.3; 
+  }
+}

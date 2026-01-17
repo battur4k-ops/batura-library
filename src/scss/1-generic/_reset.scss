@@ -1,0 +1,109 @@
+/* ============================================================
+   1-GENERIC / _RESET.SCSS
+   Batura Library | Master System v7.0 [Foundation Reset]
+   ============================================================ */
+
+/* [RULE:BOX_MODEL] */
+*,
+*::before,
+*::after {
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+}
+
+html {
+  /* 
+     Закон [LAW:FLUID_SCALABILITY]:
+     Блокируем системные отступы скроллбара, чтобы центр 
+     был математически абсолютным.
+  */
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  scrollbar-gutter: initial !important;
+  
+  /* Базовая типографика Apple */
+  -webkit-text-size-adjust: 100%;
+  
+  /* Полное скрытие системного мусора */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { 
+    display: none !important; 
+  }
+
+  /* Поддержка плавности для Lenis */
+  height: -webkit-fill-available;
+  scroll-behavior: auto !important;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  
+  /* 
+     Закон [LAW:SINGLE_SOURCE_OF_TRUTH]:
+     Используем семантические токены из _colors.scss и _typography.scss
+  */
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  
+  /* Цифровая косметология Apple */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Контроль скролла */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+/* СБРОС ИНТЕРАКТИВНЫХ ЭЛЕМЕНТОВ */
+a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+button, 
+input, 
+textarea, 
+select {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  outline: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* IMAGE RESET */
+img, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* LAYER: BACKGROUND (Three.js Shader Sync) */
+#liquid-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-bg); // Ссылка на _layers.scss (-1)
+  pointer-events: none;
+  transform: translateZ(0); 
+  will-change: transform;
+}

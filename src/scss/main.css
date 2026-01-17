@@ -1,0 +1,1017 @@
+@charset "UTF-8";
+/* ============================================================
+   BATURA LIBRARY | MASTER ARCHITECTURE
+   Professional System Build v7.0 [Modular Design]
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&family=JetBrains+Mono:wght@300;400;700&display=swap");
+/* 
+   ============================================================
+   BATURA DESIGN SYSTEM | MASTER MANIFEST v7.0
+   [LAW:SINGLE_SOURCE_OF_TRUTH] - Dispatcher Core
+   ============================================================ 
+
+   [LAW:SEMANTIC_NAMING]
+   Именуем по функции, а не по значению.
+
+   [LAW:DETERMINISTIC_SPACING]
+   Все зазоры — математическая прогрессия юнита.
+
+   [LAW:GEOMETRIC_COHESION]
+   Единство скруглений (Nested Radii).
+
+   [LAW:FLUID_SCALABILITY]
+   Использование формул и clamp() вместо px.
+
+   [LAW:MOTION_CHOREOGRAPHY]
+   Единая физика и метроном анимаций.
+
+   ============================================================ 
+*/
+/* ============================================================
+   0-SETTINGS / _COLORS.SCSS
+   Batura Library | Shader DNA v10.0 [Chromatophores]
+   ============================================================ */
+:root {
+  /* --- 1. PRIMITIVES (Сырье) --- */
+  --p-black-rgb: 0, 0, 0;
+  --p-white-rgb: 255, 255, 255;
+  /* Акцентные триплеты */
+  --p-blue-rgb: 0, 102, 255;
+  --p-purple-rgb: 157, 0, 255;
+  --p-green-rgb: 0, 255, 170;
+  --p-red-rgb: 255, 34, 68;
+  /* --- 2. SHADER DNA (Специфические токены для JS) --- */
+  /* Blue Theme */
+  --p-blue-solid: rgb(0, 102, 255);
+  --p-blue-deep: rgb(0, 20, 80);
+  /* Purple Theme */
+  --p-purple-solid: rgb(157, 0, 255);
+  --p-purple-deep: rgb(45, 0, 80);
+  /* Green Theme */
+  --p-green-solid: rgb(0, 255, 170);
+  --p-green-deep: rgb(0, 50, 40);
+  /* Red Theme */
+  --p-red-solid: rgb(255, 34, 68);
+  --p-red-deep: rgb(60, 0, 15);
+  /* --- 3. SEMANTICS (Смысл) --- */
+  --theme-accent-rgb: var(--p-blue-rgb);
+  --color-bg: rgb(var(--p-black-rgb));
+  --color-text-main: rgb(var(--p-white-rgb));
+  --color-text-dim: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+  --s-text-op-idle: 0.45;
+  --s-text-op-hover: 1.0;
+  --m-glass-base-rgb: var(--p-white-rgb);
+}
+
+:root {
+  /* --- 1. BASE UNIT (4px) --- */
+  --unit: 4px;
+  /* --- 2. SCALE (Multiples of 4) --- */
+  --space-xs: calc(var(--unit) * 2);
+  --space-sm: calc(var(--unit) * 4);
+  --space-md: calc(var(--unit) * 8);
+  --space-lg: calc(var(--unit) * 16);
+  --space-xl: calc(var(--unit) * 30);
+  /* --- 3. LAYOUT GRID --- */
+  --layout-max-width: 1700px;
+  --p-site-side: clamp(24px, 5vw, 60px);
+  --p-page-bottom: clamp(60px, 10vh, 120px);
+  --s-block-gap: clamp(64px, 12vh, 120px);
+  /* Математические константы ширины для центрирования */
+  --stable-content-width: calc(100% - (var(--p-site-side) * 2));
+  --stable-max-content: calc(var(--layout-max-width) - (var(--p-site-side) * 2));
+  /* --- 4. OPTICAL RHYTHMS --- */
+  --p-page-v: clamp(80px, 12vh, 160px);
+  --hero-offset: var(--p-page-v);
+  --card-content-width: 480px;
+}
+
+:root {
+  --z-bg: -1;
+  --z-app: 1;
+  --z-overlay: 90;
+  --z-nav: 100;
+}
+
+/* ============================================================
+   0-SETTINGS / _MOTION.SCSS
+   Batura Library | Global Rhythm DNA
+   ============================================================ */
+:root {
+  /* --- 1. DURATIONS (System Beat) --- */
+  --d-fast: 0.4s;
+  --d-base: 0.6s;
+  --d-slow: 0.8s;
+  --d-morph: var(--d-slow);
+  /* --- 2. EASING (Apple Bezier) --- */
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* --- 3. DYNAMICS --- */
+  --entrance-offset: -20px;
+  --stagger-step: 0.06s;
+  --entrance-delay: 0.2s;
+  /* --- 4. MASTER TRANSITIONS (Semantic Shortcuts) --- */
+  --t-material: background-color var(--d-fast) ease, box-shadow var(--d-fast) ease;
+  --t-text: color var(--d-fast) ease;
+  /* Асимметричный вход */
+  --t-entrance: opacity var(--d-base) ease, transform var(--d-base) var(--e-out);
+}
+
+:root {
+  /* --- 1. FONT FAMILIES --- */
+  --font-main: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  /* --- 2. FLUID SIZES (clamp engine) --- */
+  --fs-h1: clamp(40px, 8vw, 92px);
+  --fs-h2: clamp(28px, 4vw, 54px);
+  --fs-body: clamp(14px, 1.1vw, 16px);
+  --fs-caption: 11px;
+  /* --- 3. OPTICAL SPACING --- */
+  --lh-body: 1.6;
+  --ls-caption: 0.15em;
+}
+
+:root {
+  /* --- 1. CORE PHYSICS (Фундамент) --- */
+  --s-glass-blur: 6px;
+  --s-stroke-width: 0.5px;
+  /* --- 2. MATERIAL DENSITY (Прозрачность фона) --- */
+  --s-glass-op-base: 0.01;
+  --s-glass-op-hover: 0.05;
+  --s-glass-op-active: 0.03;
+  /* --- 3. STROKE INTENSITY (Прозрачность обводки) --- */
+  --s-stroke-op-idle: 0.15;
+  --s-stroke-op-hover: 0.40;
+  --s-stroke-op-active: 0.60;
+  /* --- 4. GLARE (Световой слой) --- */
+  --s-glare-op-hover: 0.05;
+  --s-glare-op-active: 0.40;
+}
+
+:root {
+  /* --- 1. MASTER RADII --- */
+  --radius-master: 45px;
+  --p-card: var(--space-md);
+  /* Закон [LAW:GEOMETRIC_COHESION]: Вложенные радиусы */
+  --radius-inner: calc(var(--radius-master) - var(--p-card));
+  /* --- 2. DYNAMICS --- */
+  --card-grow-base: 1;
+  --card-grow-active: 5;
+  --card-grow-active-hover: 10.4;
+  /* --- 3. OPTICAL COMPENSATION --- */
+  --logo-balance-x: -7%;
+  --text-offset-hero: -0.075em;
+  --text-offset-heading: -0.065em;
+}
+
+/* Обновленные переменные в :root для управления навбаром */
+:root {
+  --nav-h-start: 56px;
+  --nav-h-morph: 56px;
+  --nav-radius: var(--radius-master);
+  --nav-content-scale: 0.7;
+  --nav-h: var(--nav-h-start);
+  --nav-content-h: calc(var(--nav-h) * var(--nav-content-scale));
+  --nav-pad: calc((var(--nav-h) - var(--nav-content-h)) / 2);
+  --nav-w-start: 1;
+  --nav-w-morph: 0.96;
+  --nav-w-factor: var(--nav-w-start);
+  --nav-blur-start: var(--s-glass-blur);
+  --nav-blur-morph: 25px;
+  --nav-top: var(--space-sm);
+  --z-nav: 1000;
+  --d-morph: var(--d-base);
+}
+
+:root {
+  /* Buttons */
+  --ui-h-btn: clamp(36px, 4.5vh, 48px);
+  --ui-fs-btn: clamp(9px, 0.7vw, 11px);
+  --ui-p-btn: clamp(20px, 2.5vw, 32px);
+  --ui-radius-btn: calc(var(--ui-h-btn) / 2);
+  /* Inputs & UI elements */
+  --ui-fs-search: calc(var(--nav-h-start) * 0.28);
+}
+
+/* 
+   ПРИМЕЧАНИЕ: 
+   Все переменные объявлены внутри соответствующих файлов в блоках :root.
+   Порядок импорта критичен для работы зависимостей (например, UI зависит от Spacing).
+*/
+/* ============================================================
+   1-GENERIC / _RESET.SCSS
+   Batura Library | Master System v7.0 [Foundation Reset]
+   ============================================================ */
+/* [RULE:BOX_MODEL] */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* 
+     Закон [LAW:FLUID_SCALABILITY]:
+     Блокируем системные отступы скроллбара, чтобы центр 
+     был математически абсолютным.
+  */
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  scrollbar-gutter: initial !important;
+  /* Базовая типографика Apple */
+  -webkit-text-size-adjust: 100%;
+  /* Полное скрытие системного мусора */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Поддержка плавности для Lenis */
+  height: -webkit-fill-available;
+  scroll-behavior: auto !important;
+}
+html::-webkit-scrollbar {
+  display: none !important;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  /* 
+     Закон [LAW:SINGLE_SOURCE_OF_TRUTH]:
+     Используем семантические токены из _colors.scss и _typography.scss
+  */
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  /* Цифровая косметология Apple */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Контроль скролла */
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+/* СБРОС ИНТЕРАКТИВНЫХ ЭЛЕМЕНТОВ */
+a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  outline: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+/* IMAGE RESET */
+img, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* LAYER: BACKGROUND (Three.js Shader Sync) */
+#liquid-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-bg);
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* ============================================================
+   2-ELEMENTS / _BASE.SCSS
+   Batura Library | Master System v7.1 [Clean Foundation]
+   ============================================================ */
+body {
+  background-color: transparent;
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  width: 100%;
+}
+
+main {
+  position: relative;
+  z-index: var(--z-app);
+  width: 100%;
+}
+
+canvas {
+  display: block;
+}
+
+section {
+  position: relative;
+  width: 100%;
+}
+
+/* ============================================================
+   2-ELEMENTS / _TEXT.SCSS
+   Batura Library | Master System v7.0 [Unified Typography]
+   ============================================================ */
+/**
+ * 1. BARE TAGS (Глобальные настройки тегов)
+ * Мы привязываем теги к классам, чтобы верстка была предсказуемой.
+ */
+/**
+ * 2. TYPOGRAPHY CLASSES
+ */
+/* HERO: Главный визуальный акцент */
+.text-hero, h1 {
+  font-family: var(--font-main);
+  font-size: var(--fs-h1);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  /* [RULE:OPTICAL_BALANCE] - Компенсация "дырок" в шрифте Inter */
+  margin-left: var(--text-offset-hero);
+}
+
+/* HEADING: Заголовки разделов и папок */
+.text-heading, h2 {
+  font-family: var(--font-main);
+  font-size: var(--fs-h2);
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-left: var(--text-offset-heading);
+}
+
+/* BODY: Читабельный информационный слой */
+.text-body, p {
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: var(--lh-body);
+  color: var(--color-text-dim);
+  /* [LAW:VISUAL_HIERARCHY] - Дисциплина длины строки */
+  max-width: 55ch;
+}
+
+/* DATA: Моноширинные индексы, теги и подписи */
+.text-data, small {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  color: var(--color-text-dim);
+  letter-spacing: var(--ls-caption);
+  text-transform: uppercase;
+}
+
+/* ACCENT: Привязка к акцентному цвету системы */
+.text-accent {
+  color: rgb(var(--theme-accent-rgb));
+}
+
+/* ============================================================
+   3-OBJECTS / _LAYOUT.SCSS
+   Batura Library | Master System v7.0 [Structural Backbone]
+   ============================================================ */
+/**
+ * 1. FLOW ENGINE
+ * Автоматизация вертикальных ритмов. 
+ * Гарантирует, что между блоками всегда системный зазор.
+ */
+.l-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Оптическая компенсация для типографики в потоке */
+}
+.l-flow > * + * {
+  margin-top: var(--space-md);
+}
+.l-flow > .text-data + .text-hero, .l-flow > small + .text-hero, .l-flow > .text-data + h1, .l-flow > small + h1, .l-flow > .text-data + .text-heading, .l-flow > small + .text-heading, .l-flow > .text-data + h2, .l-flow > small + h2, .l-flow > .text-hero + .text-body, .l-flow > h1 + .text-body, .l-flow > .text-hero + p, .l-flow > h1 + p, .l-flow > .text-heading + .text-body, .l-flow > h2 + .text-body, .l-flow > .text-heading + p, .l-flow > h2 + p {
+  margin-top: var(--space-xs);
+}
+
+/**
+ * 2. APP WRAPPER
+ * Глобальная оболочка приложения. 
+ * Центрирует весь контент относительно физического экрана.
+ */
+#app-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Уровень Google: предотвращаем горизонтальный сдвиг при открытии оверлеев */
+  align-items: center;
+}
+
+/**
+ * 3. APP ROOT ( Spine )
+ * Главный вертикальный позвоночник.
+ */
+#app-root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  /* 
+     ФОРМУЛА "ВОЗДУХА":
+     Верхний отступ учитывает высоту навбара, его положение и геройский зазор.
+  */
+  padding-top: calc(var(--nav-h) + var(--nav-top) + var(--hero-offset));
+  padding-bottom: var(--p-page-bottom);
+  gap: var(--s-block-gap);
+  box-sizing: border-box;
+}
+
+/**
+ * 4. CONTAINER
+ * Ограничитель ширины и математический центр системы.
+ */
+.l-container {
+  width: 100%;
+  /* [LAW:SINGLE_SOURCE_OF_TRUTH] - Ссылка на _spacing.scss */
+  max-width: var(--layout-max-width);
+  /* Истинное центрирование по оси X=0 */
+  margin-inline: auto;
+  /* Системный буфер от краев экрана */
+  padding-inline: var(--p-site-side);
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* ============================================================
+   4-MATERIALS / _GLASS.SCSS
+   Batura Library | Master System v11.6 [Slot-Logic Fix]
+   ============================================================ */
+/* ============================================================
+   5-COMPONENTS / _NAVBAR.SCSS
+   Batura Library | System Synced v12.8 [Blur Sync & Smooth Morph]
+   ============================================================ */
+.b-navbar {
+  /* 1. LOCAL TOKENS & GEOMETRY */
+  --nav-radius: var(--radius-master);
+  --nav-h: var(--nav-h-start);
+  --nav-content-h: calc(var(--nav-h) * var(--nav-content-scale));
+  --nav-pad: calc((var(--nav-h) - var(--nav-content-h)) / 2);
+  --nav-inner-radius: calc(var(--nav-radius) - var(--nav-pad));
+  /* 2. MATERIAL (Синхронизация со слотами) */
+  --nav-bg-op: var(--s-glass-op-base);
+  --nav-stroke-op: var(--s-stroke-op-idle);
+  /* 
+     [FIX] Навбар объявляет свою переменную блюра.
+     Теперь миксин её "услышит" и применит.
+  */
+  --nav-blur: var(--s-glass-blur);
+  position: relative;
+  /* Принудительно используем переменную радиуса из компонента */
+  border-radius: var(--nav-radius, var(--nav-radius));
+  /* Инициализация слотов (Symmetry Lock) */
+  --nav-bg-op: var(--s-glass-op-base);
+  --nav-stroke-op: var(--s-stroke-op-idle);
+  /* 
+     [FIX] Миксин теперь не перезаписывает переменную блюра, 
+     а берет её из компонента. Если её там нет — берет глобальный токен.
+  */
+  background-color: rgba(var(--m-glass-base-rgb), var(--nav-bg-op));
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--nav-stroke-op));
+  backdrop-filter: blur(var(--nav-blur, var(--s-glass-blur)));
+  -webkit-backdrop-filter: blur(var(--nav-blur, var(--s-glass-blur)));
+  /* [ANTI-JITTER] Стабилизация для GPU */
+  transform: translate3d(0, 0, 0.1px);
+  backface-visibility: hidden;
+  border: none;
+  overflow: hidden;
+  /* Метроном системы */
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  /* 3. LAYOUT */
+  position: fixed;
+  top: var(--nav-top);
+  z-index: var(--z-nav);
+  inset-inline: 0;
+  margin-inline: auto;
+  height: var(--nav-h);
+  width: calc(var(--nav-w-factor) * min(var(--stable-content-width), var(--stable-max-content)));
+  padding-inline: var(--nav-pad);
+  display: flex;
+  align-items: center;
+  /* [STABILITY LOCK] */
+  transform: translate3d(0, 0, 0.1px);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  contain: layout;
+  will-change: height, width, border-radius, background-color;
+  /* 4. MOTION ENGINE */
+  transition: height var(--d-morph) var(--e-out), width var(--d-morph) var(--e-out), border-radius var(--d-morph) var(--e-out), padding var(--d-morph) var(--e-out), background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  transition: height var(--d-morph) var(--e-out), width var(--d-morph) var(--e-out), border-radius var(--d-morph) var(--e-out), padding var(--d-morph) var(--e-out), background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), backdrop-filter var(--d-morph) var(--e-out);
+  transition: height var(--d-morph) var(--e-out), width var(--d-morph) var(--e-out), border-radius var(--d-morph) var(--e-out), padding var(--d-morph) var(--e-out), background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), backdrop-filter var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  /* 5. SCROLL STATE */
+}
+.b-navbar::before {
+  display: none;
+}
+body.is-scrolled .b-navbar {
+  --nav-h: var(--nav-h-morph);
+  --nav-w-factor: var(--nav-w-morph);
+  --nav-bg-op: var(--s-glass-op-hover);
+  --nav-stroke-op: var(--s-stroke-op-hover);
+  /* При скролле уплотняем блюр для премиального эффекта */
+  --nav-blur: calc(var(--s-glass-blur) * 1.5);
+  /* Передаем состояние вложенным кнопкам */
+}
+body.is-scrolled .b-navbar .ui-button {
+  --btn-bg-op: var(--s-glass-op-hover);
+  --btn-stroke-op: var(--s-stroke-op-hover);
+}
+.b-navbar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: var(--nav-content-h);
+  width: var(--nav-content-h);
+  /* Стабилизация вложенного логотипа */
+  transform: translateZ(0);
+}
+
+/* ============================================================
+   5-COMPONENTS / _BUTTON.SCSS
+   Batura Library | System Synced v12.2 [Symmetry Lock]
+   ============================================================ */
+.ui-button {
+  /* 1. ГЕОМЕТРИЧЕСКАЯ БАЗА */
+  --btn-radius: calc(var(--radius-master) * 0.4);
+  /* Подключаем материал: он ищет --btn-radius-override для кастомизации */
+  position: relative;
+  /* Принудительно используем переменную радиуса из компонента */
+  border-radius: var(--btn-radius, var(--btn-radius));
+  /* Инициализация слотов (Symmetry Lock) */
+  --btn-bg-op: var(--s-glass-op-base);
+  --btn-stroke-op: var(--s-stroke-op-idle);
+  /* 
+     [FIX] Миксин теперь не перезаписывает переменную блюра, 
+     а берет её из компонента. Если её там нет — берет глобальный токен.
+  */
+  background-color: rgba(var(--m-glass-base-rgb), var(--btn-bg-op));
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--btn-stroke-op));
+  backdrop-filter: blur(var(--btn-blur, var(--s-glass-blur)));
+  -webkit-backdrop-filter: blur(var(--btn-blur, var(--s-glass-blur)));
+  /* [ANTI-JITTER] Стабилизация для GPU */
+  transform: translate3d(0, 0, 0.1px);
+  backface-visibility: hidden;
+  border: none;
+  overflow: hidden;
+  /* Метроном системы */
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Базовые размеры из _ui.scss */
+  height: var(--ui-h-btn);
+  padding-inline: var(--ui-p-btn);
+  position: relative;
+  /* ТИПОГРАФИКА */
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--ui-fs-btn);
+  text-transform: uppercase;
+  color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+  line-height: 1;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  /* Стабилизация для GPU */
+  -webkit-font-smoothing: antialiased;
+  transform: translate3d(0, 0, 0.1px);
+  transition: var(--t-material), var(--t-text), transform var(--d-fast) var(--e-out), border-radius var(--d-fast) var(--e-out);
+  /* --- INTERACTIONS --- */
+  /* --- MODIFIER: LOGO (The Symmetry Lock) --- */
+  /* --- CONTEXT: NAVBAR (Dynamic Scaling) --- */
+}
+.ui-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 0%, rgba(var(--m-glass-base-rgb), var(--s-glare-op-hover)), transparent);
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--s-stroke-op-active));
+  opacity: var(--btn-glare-op, 0);
+  transition: opacity var(--d-fast) var(--e-out);
+}
+.ui-button::before {
+  transition: opacity var(--d-fast) var(--e-out);
+}
+.ui-button:hover {
+  --btn-bg-op: var(--s-glass-op-active);
+  --btn-stroke-op: var(--s-stroke-op-active);
+  --btn-glare-op: 1;
+  color: rgba(var(--p-white-rgb), var(--s-text-op-hover));
+}
+.ui-button--logo {
+  /* 
+     [LAW:GEOMETRIC_COHESION]
+     aspect-ratio гарантирует, что ширина ВСЕГДА равна высоте.
+     padding: 0 убирает боковое распирание.
+  */
+  aspect-ratio: 1/1;
+  padding-inline: 0;
+  width: auto;
+}
+.ui-button--logo .b-logo {
+  height: 55%;
+  width: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+.ui-button--logo .b-logo svg {
+  height: 100%;
+  width: auto;
+  /* Оптическая компенсация формы буквы B */
+  transform: translate3d(var(--logo-balance-x), 0, 0);
+}
+.b-navbar .ui-button {
+  /* Навбар диктует высоту — aspect-ratio сделает из неё квадрат */
+  height: var(--nav-content-h);
+  width: var(--nav-content-h);
+  min-width: var(--nav-content-h);
+  padding: 0;
+  /* Применяем вычисленный радиус навбара */
+  --btn-radius-override: var(--nav-inner-radius);
+  --btn-bg-op: 0.005;
+  --btn-stroke-op: var(--s-stroke-op-idle);
+  /* Синхронизируем движение с расширением навбара */
+  transition: var(--t-material), var(--t-text), border-radius var(--d-morph) var(--e-out), height var(--d-morph) var(--e-out), width var(--d-morph) var(--e-out);
+}
+
+/* ============================================================
+   5-COMPONENTS / _CARD.SCSS
+   Batura Library | System Synced v12.0 [Hover Cascade Edition]
+   ============================================================ */
+/* 
+   [FIX: THE SNAP & JITTER]
+   Анимация появления с фиксацией в Z-пространстве (0.1px).
+   Это предотвращает микро-прыжок текста при завершении анимации.
+*/
+@keyframes cardItemEntrance {
+  0% {
+    opacity: 0.01;
+    transform: translate3d(var(--entrance-offset), 0, 0.1px);
+    -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 0.999;
+    transform: translate3d(0, 0, 0.1px);
+    -webkit-backdrop-filter: blur(var(--s-glass-blur));
+            backdrop-filter: blur(var(--s-glass-blur));
+  }
+}
+.b-card {
+  /* 1. МАТЕРИАЛ (Scope: card) */
+  position: relative;
+  /* Принудительно используем переменную радиуса из компонента */
+  border-radius: var(--card-radius, var(--radius-master));
+  /* Инициализация слотов (Symmetry Lock) */
+  --card-bg-op: var(--s-glass-op-base);
+  --card-stroke-op: var(--s-stroke-op-idle);
+  /* 
+     [FIX] Миксин теперь не перезаписывает переменную блюра, 
+     а берет её из компонента. Если её там нет — берет глобальный токен.
+  */
+  background-color: rgba(var(--m-glass-base-rgb), var(--card-bg-op));
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--card-stroke-op));
+  backdrop-filter: blur(var(--card-blur, var(--s-glass-blur)));
+  -webkit-backdrop-filter: blur(var(--card-blur, var(--s-glass-blur)));
+  /* [ANTI-JITTER] Стабилизация для GPU */
+  transform: translate3d(0, 0, 0.1px);
+  backface-visibility: hidden;
+  border: none;
+  overflow: hidden;
+  /* Метроном системы */
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  /* 2. ГЕОМЕТРИЯ */
+  flex: var(--card-grow-base) 0 10%;
+  min-width: 80px;
+  height: 100%;
+  cursor: pointer;
+  will-change: flex-grow;
+  /* Ритм системы из _motion.scss */
+  transition: flex-grow var(--d-slow) var(--e-out), var(--t-material);
+  /* --- INTERACTIONS (Hover Cascade Protocol) --- */
+  /* А. Наведение на ЗАКРЫТУЮ карточку */
+  /* Б. АКТИВНОЕ СОСТОЯНИЕ (Открытая карточка) */
+  /* --- ВНУТРЕННЯЯ СТРУКТУРА --- */
+}
+.b-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 0%, rgba(var(--m-glass-base-rgb), var(--s-glare-op-hover)), transparent);
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--s-stroke-op-active));
+  opacity: var(--card-glare-op, 0);
+  transition: opacity var(--d-fast) var(--e-out);
+}
+.b-card:hover:not(.is-active):not(.b-card--static) {
+  --card-bg-op: var(--s-glass-op-hover);
+  --card-stroke-op: var(--s-stroke-op-hover);
+  --card-glare-op: 1;
+  /* [CASCADE] Подсвечиваем кнопку внутри */
+}
+.b-card:hover:not(.is-active):not(.b-card--static) .ui-button {
+  --btn-bg-op: var(--s-glass-op-hover);
+  --btn-stroke-op: var(--s-stroke-op-hover);
+}
+.b-card:hover:not(.is-active):not(.b-card--static) .b-card__label, .b-card:hover:not(.is-active):not(.b-card--static) .b-card__index {
+  color: rgba(var(--p-white-rgb), var(--s-text-op-hover));
+}
+.b-card.is-active {
+  flex-grow: var(--card-grow-active);
+  cursor: default;
+  --card-bg-op: var(--s-glass-op-active);
+  --card-stroke-op: var(--s-stroke-op-active);
+  /* По умолчанию в открытой карте кнопка видна, но спокойна */
+  /* [CASCADE] Если водим мышкой по ОБЛАСТИ открытой карты */
+  /* Вход контента (Stagger Logic) */
+  /* Мгновенный уход лейбла (v9.2 fix) */
+}
+.b-card.is-active .ui-button {
+  --btn-bg-op: var(--s-glass-op-base);
+  --btn-stroke-op: var(--s-stroke-op-idle);
+}
+.b-card.is-active:hover {
+  flex-grow: var(--card-grow-active-hover);
+  --card-glare-op: 1;
+}
+.b-card.is-active:hover .ui-button {
+  --btn-bg-op: var(--s-glass-op-hover);
+  --btn-stroke-op: var(--s-stroke-op-hover);
+}
+.b-card.is-active .b-card__content {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity var(--d-base) var(--e-out) var(--entrance-delay);
+}
+.b-card.is-active .b-card__content > * {
+  animation: cardItemEntrance var(--d-base) var(--e-out) both;
+  -webkit-font-smoothing: antialiased;
+}
+.b-card.is-active .b-card__content > *:nth-child(1) {
+  animation-delay: calc(var(--entrance-delay) + 1 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(2) {
+  animation-delay: calc(var(--entrance-delay) + 2 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(3) {
+  animation-delay: calc(var(--entrance-delay) + 3 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(4) {
+  animation-delay: calc(var(--entrance-delay) + 4 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(5) {
+  animation-delay: calc(var(--entrance-delay) + 5 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(6) {
+  animation-delay: calc(var(--entrance-delay) + 6 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(7) {
+  animation-delay: calc(var(--entrance-delay) + 7 * var(--stagger-step));
+}
+.b-card.is-active .b-card__content > *:nth-child(8) {
+  animation-delay: calc(var(--entrance-delay) + 8 * var(--stagger-step));
+}
+.b-card.is-active .b-card__label {
+  opacity: 0;
+  transition: opacity 0s;
+}
+.b-card.is-active .b-card__index {
+  opacity: 1;
+  color: rgba(var(--p-white-rgb), var(--s-text-op-hover));
+  transition-delay: var(--entrance-delay);
+}
+.b-card__viewport {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: var(--p-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: var(--radius-inner);
+  z-index: 2;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.b-card__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Оптическая компенсация для типографики в потоке */
+  width: 100%;
+  max-width: var(--card-content-width);
+  opacity: 0;
+  visibility: hidden;
+}
+.b-card__content > * + * {
+  margin-top: var(--space-md);
+}
+.b-card__content > .text-data + .text-hero, .b-card__content > small + .text-hero, .b-card__content > .text-data + h1, .b-card__content > small + h1, .b-card__content > .text-data + .text-heading, .b-card__content > small + .text-heading, .b-card__content > .text-data + h2, .b-card__content > small + h2, .b-card__content > .text-hero + .text-body, .b-card__content > h1 + .text-body, .b-card__content > .text-hero + p, .b-card__content > h1 + p, .b-card__content > .text-heading + .text-body, .b-card__content > h2 + .text-body, .b-card__content > .text-heading + p, .b-card__content > h2 + p {
+  margin-top: var(--space-xs);
+}
+.b-card__index, .b-card__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+  transition: var(--t-text);
+  z-index: 10;
+}
+.b-card__label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Фикс прыжка и здесь */
+  transform: translate3d(-50%, -50%, 0.1px) rotate(-90deg);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   5-COMPONENTS / _ACCORDION.SCSS
+   ============================================================ */
+.b-accordion {
+  display: flex;
+  /* 
+     ФИКС ПРАВОЙ ГРАНИЦЫ:
+     Мы расширяем ширину на 2 юнита (влево и вправо), 
+     чтобы компенсировать отрицательный margin.
+  */
+  width: calc(100% + var(--unit) * 2);
+  height: clamp(450px, 65vh, 700px);
+  gap: var(--space-sm);
+  align-items: stretch;
+  justify-content: flex-start;
+  /* 
+     Центрируем расширенный аккордеон:
+     margin: -4px (юнит) идеально выравнивает его по сетке,
+     теперь он будет выступать одинаково с обеих сторон.
+  */
+  margin-inline: calc(var(--unit) * -1);
+  padding: var(--unit);
+  overflow: visible;
+  /* Убираем ограничения для вложенных карточек */
+}
+.b-accordion > .b-card {
+  max-width: none;
+  /* Гарантируем, что карточки всегда пытаются занять все место */
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   5-COMPONENTS / _FOOTER.SCSS
+   Batura Library | System Synced v7.3 [Stroke Unified]
+   ============================================================ */
+.b-footer {
+  /* 
+     1. ГЕОМЕТРИЧЕСКАЯ ГРАНИЦА:
+     Синхронизируем толщину линии с мастер-токеном системы.
+  */
+  border-top: var(--s-stroke-width) solid rgba(var(--p-white-rgb), 0.05);
+  padding-top: var(--space-xl);
+  padding-bottom: var(--p-page-bottom);
+}
+.b-footer__grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: stretch;
+}
+@media (max-width: 850px) {
+  .b-footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+.b-footer__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Оптическая компенсация для типографики в потоке */
+}
+.b-footer__brand > * + * {
+  margin-top: var(--space-md);
+}
+.b-footer__brand > .text-data + .text-hero, .b-footer__brand > small + .text-hero, .b-footer__brand > .text-data + h1, .b-footer__brand > small + h1, .b-footer__brand > .text-data + .text-heading, .b-footer__brand > small + .text-heading, .b-footer__brand > .text-data + h2, .b-footer__brand > small + h2, .b-footer__brand > .text-hero + .text-body, .b-footer__brand > h1 + .text-body, .b-footer__brand > .text-hero + p, .b-footer__brand > h1 + p, .b-footer__brand > .text-heading + .text-body, .b-footer__brand > h2 + .text-body, .b-footer__brand > .text-heading + p, .b-footer__brand > h2 + p {
+  margin-top: var(--space-xs);
+}
+.b-footer__brand .b-footer__logo {
+  margin-top: var(--space-lg);
+}
+.b-footer__logo {
+  height: calc(var(--unit) * 7);
+  color: rgb(var(--p-white-rgb));
+  opacity: calc(var(--s-text-op-idle) * 0.4);
+  transition: opacity var(--d-fast) var(--e-out);
+  margin-left: calc(var(--unit) * -0.5);
+}
+.b-footer__logo .b-logo {
+  height: 100%;
+}
+.b-footer__logo .b-logo svg {
+  height: 100%;
+  transform: translate3d(var(--logo-balance-x), 0, 0);
+}
+.b-footer__brand:hover .b-footer__logo {
+  opacity: var(--s-text-op-idle);
+}
+.b-footer__group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Оптическая компенсация для типографики в потоке */
+}
+.b-footer__group > * + * {
+  margin-top: var(--space-sm);
+}
+.b-footer__group > .text-data + .text-hero, .b-footer__group > small + .text-hero, .b-footer__group > .text-data + h1, .b-footer__group > small + h1, .b-footer__group > .text-data + .text-heading, .b-footer__group > small + .text-heading, .b-footer__group > .text-data + h2, .b-footer__group > small + h2, .b-footer__group > .text-hero + .text-body, .b-footer__group > h1 + .text-body, .b-footer__group > .text-hero + p, .b-footer__group > h1 + p, .b-footer__group > .text-heading + .text-body, .b-footer__group > h2 + .text-body, .b-footer__group > .text-heading + p, .b-footer__group > h2 + p {
+  margin-top: var(--space-xs);
+}
+.b-footer__link {
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: var(--lh-body);
+  color: rgba(var(--m-glass-base-rgb), var(--s-text-op-idle));
+  transition: var(--t-text);
+}
+.b-footer__link:hover {
+  color: rgba(var(--m-glass-base-rgb), var(--s-text-op-hover));
+}
+.b-footer__bottom {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-md);
+  /* ВТОРИЧНАЯ ЛИНИЯ: Тоже привязана к системе */
+  border-top: var(--s-stroke-width) solid rgba(var(--p-white-rgb), 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.b-footer__bottom .text-data, .b-footer__bottom small {
+  font-size: 10px;
+  opacity: calc(var(--s-text-op-idle) * 0.6);
+  letter-spacing: var(--ls-caption);
+}
+
+/* ============================================================
+   5-COMPONENTS / _LOGO.SCSS
+   Batura Library | Pure Static Logo Shell
+   ============================================================ */
+.b-logo {
+  display: inline-flex;
+  /* 
+     Логотип по умолчанию берет высоту того места, куда ты его положишь.
+     Если это навбар — он будет высотой с навбар. 
+     Если это пустой div — задай высоту родителю.
+  */
+  height: 100%;
+}
+.b-logo svg {
+  height: 100%;
+  width: auto;
+  display: block;
+}/*# sourceMappingURL=main.css.map */

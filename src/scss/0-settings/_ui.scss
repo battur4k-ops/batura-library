@@ -1,0 +1,10 @@
+:root {
+  /* Buttons */
+  --ui-h-btn: clamp(36px, 4.5vh, 48px);
+  --ui-fs-btn: clamp(9px, 0.7vw, 11px);
+  --ui-p-btn: clamp(20px, 2.5vw, 32px);
+  --ui-radius-btn: calc(var(--ui-h-btn) / 2);
+
+  /* Inputs & UI elements */
+  --ui-fs-search: calc(var(--nav-h-start) * 0.28);
+}

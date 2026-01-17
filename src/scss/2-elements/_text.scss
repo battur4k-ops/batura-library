@@ -1,0 +1,70 @@
+/* ============================================================
+   2-ELEMENTS / _TEXT.SCSS
+   Batura Library | Master System v7.0 [Unified Typography]
+   ============================================================ */
+
+/**
+ * 1. BARE TAGS (Глобальные настройки тегов)
+ * Мы привязываем теги к классам, чтобы верстка была предсказуемой.
+ */
+h1 { @extend .text-hero; }
+h2 { @extend .text-heading; }
+p  { @extend .text-body; }
+small { @extend .text-data; }
+
+/**
+ * 2. TYPOGRAPHY CLASSES
+ */
+
+/* HERO: Главный визуальный акцент */
+.text-hero {
+  font-family: var(--font-main);
+  font-size: var(--fs-h1);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+
+  /* [RULE:OPTICAL_BALANCE] - Компенсация "дырок" в шрифте Inter */
+  margin-left: var(--text-offset-hero);
+}
+
+/* HEADING: Заголовки разделов и папок */
+.text-heading {
+  font-family: var(--font-main);
+  font-size: var(--fs-h2);
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-main);
+  margin-left: var(--text-offset-heading);
+}
+
+/* BODY: Читабельный информационный слой */
+.text-body {
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: var(--lh-body);
+  color: var(--color-text-dim);
+  
+  /* [LAW:VISUAL_HIERARCHY] - Дисциплина длины строки */
+  max-width: 55ch; 
+}
+
+/* DATA: Моноширинные индексы, теги и подписи */
+.text-data {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  color: var(--color-text-dim);
+  letter-spacing: var(--ls-caption);
+  text-transform: uppercase;
+}
+
+/* ACCENT: Привязка к акцентному цвету системы */
+.text-accent {
+  color: rgb(var(--theme-accent-rgb));
+}

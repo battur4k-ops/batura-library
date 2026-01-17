@@ -1,0 +1,92 @@
+/* ============================================================
+   5-COMPONENTS / _FOOTER.SCSS
+   Batura Library | System Synced v7.3 [Stroke Unified]
+   ============================================================ */
+
+.b-footer {
+  /* 
+     1. ГЕОМЕТРИЧЕСКАЯ ГРАНИЦА:
+     Синхронизируем толщину линии с мастер-токеном системы.
+  */
+  border-top: var(--s-stroke-width) solid rgba(var(--p-white-rgb), 0.05);
+  
+  padding-top: var(--space-xl);
+  padding-bottom: var(--p-page-bottom);
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: stretch;
+  }
+
+  @media (max-width: 850px) {
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+  }
+
+  &__brand {
+    @include flow-engine(var(--space-md));
+
+    .b-footer__logo {
+        margin-top: var(--space-lg); 
+    }
+  }
+
+  &__logo {
+    height: calc(var(--unit) * 7); 
+    color: rgb(var(--p-white-rgb));
+    opacity: calc(var(--s-text-op-idle) * 0.4); 
+    transition: opacity var(--d-fast) var(--e-out);
+    margin-left: calc(var(--unit) * -0.5); 
+
+    .b-logo {
+        height: 100%;
+        svg {
+            height: 100%;
+            transform: translate3d(var(--logo-balance-x), 0, 0);
+        }
+    }
+    
+    .b-footer__brand:hover & {
+        opacity: var(--s-text-op-idle);
+    }
+  }
+
+  &__group {
+    @include flow-engine(var(--space-sm)); 
+  }
+
+  &__link {
+    font-family: var(--font-main);
+    font-size: var(--fs-body);
+    font-weight: 300;
+    line-height: var(--lh-body);
+    color: rgba(var(--m-glass-base-rgb), var(--s-text-op-idle));
+    transition: var(--t-text);
+    
+    &:hover {
+      color: rgba(var(--m-glass-base-rgb), var(--s-text-op-hover));
+    }
+  }
+
+  &__bottom {
+    margin-top: var(--space-sm); 
+    padding-top: var(--space-md);
+    
+    /* ВТОРИЧНАЯ ЛИНИЯ: Тоже привязана к системе */
+    border-top: var(--s-stroke-width) solid rgba(var(--p-white-rgb), 0.03);
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .text-data {
+      font-size: 10px;
+      opacity: calc(var(--s-text-op-idle) * 0.6);
+      letter-spacing: var(--ls-caption);
+    }
+  }
+}
