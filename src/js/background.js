@@ -1,33 +1,36 @@
 /* ============================================================
-   BACKGROUND.JS — HIGH-FIDELITY ENGINE (Visibility Optimized)
-   Batura Library | Shader Sync v10.0
+   BACKGROUND.JS — HIGH-FIDELITY ENGINE (Brightness Optimized)
+   Batura Library | Shader Sync v11.0 [Luminance Balance]
    ============================================================ */
 
 (function() {
     const canvas = document.getElementById('liquid-bg-canvas');
     if (!canvas) return;
 
-    // Оптимизированный забор токенов
     const getToken = (name) => {
         const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-        return val || "#000000"; // Fallback к черному
+        return val || "#000000";
     };
 
-    // Синхронизируем темы с новыми SCSS токенами
     const themeColors = [
-        [new THREE.Color(getToken('--p-blue-deep')),   new THREE.Color(getToken('--p-blue-solid'))],
-        [new THREE.Color(getToken('--p-purple-deep')), new THREE.Color(getToken('--p-purple-solid'))],
-        [new THREE.Color(getToken('--p-green-deep')),  new THREE.Color(getToken('--p-green-solid'))],
-        [new THREE.Color(getToken('--p-red-deep')),    new THREE.Color(getToken('--p-red-solid'))]
+        [new THREE.Color(getToken('--p-blue-deep')),   new THREE.Color(getToken('--p-blue-solid'))],   // 0
+        [new THREE.Color(getToken('--p-purple-deep')), new THREE.Color(getToken('--p-purple-solid'))], // 1
+        [new THREE.Color(getToken('--p-green-deep')),  new THREE.Color(getToken('--p-green-solid'))],  // 2
+        [new THREE.Color(getToken('--p-red-deep')),    new THREE.Color(getToken('--p-red-solid'))],    // 3
+        [new THREE.Color(getToken('--p-yellow-deep')), new THREE.Color(getToken('--p-yellow-solid'))], // 4
+        [new THREE.Color(getToken('--p-cyan-deep')),   new THREE.Color(getToken('--p-cyan-solid'))],   // 5
+        [new THREE.Color(getToken('--p-pink-deep')),   new THREE.Color(getToken('--p-pink-solid'))],   // 6
+        [new THREE.Color(getToken('--p-orange-deep')), new THREE.Color(getToken('--p-orange-solid'))], // 7
+        [new THREE.Color(getToken('--p-silver-deep')), new THREE.Color(getToken('--p-silver-solid'))]  // 8
     ];
 
     const renderer = new THREE.WebGLRenderer({ 
         canvas, 
         antialias: true, 
-        alpha: false // Нам не нужна прозрачность самого канваса, если ClearColor черный
+        alpha: false 
     });
     
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Оптимизация для Retina
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setClearColor(0x000000, 1); 
     
@@ -38,7 +41,6 @@
     let targetC1 = themeColors[0][0].clone();
     let targetC2 = themeColors[0][1].clone();
 
-    // Shader Source (Твой оригинальный Dithering и Snoise сохранены)
     const fragmentShader = `
         precision highp float;
         uniform float u_time;
@@ -70,26 +72,43 @@
             return 130.0 * dot(m, g);
         }
 
-        void main() {
+ void main() {
             vec2 uv = gl_FragCoord.xy / u_res.xy;
             float ratio = u_res.x / u_res.y;
             vec2 centeredUV = (uv - 0.5) * vec2(ratio, 1.0);
             vec2 mouseUV = (u_mouse - 0.5) * vec2(ratio, 1.0);
             
             float dist = distance(centeredUV, mouseUV);
-            float mask = smoothstep(1.5, 0.0, dist); 
+            float mask = smoothstep(1.2, 0.0, dist); 
             
             float n = snoise(centeredUV * 0.7 - u_time * 0.015);
             n += snoise(centeredUV * 1.3 + u_time * 0.025) * 0.2;
+            n = n * 0.5 + 0.5; 
             
-            float colorFlow = clamp(0.4 + n * 0.3, 0.0, 1.0);
+            float colorFlow = clamp(0.2 + n * 0.6, 0.0, 1.0);
             vec3 color = mix(u_color1, u_color2, colorFlow);
             
-            float intensity = pow(mask, 1.8) * (n * 0.3 + 0.7) * 1.2;
-            vec3 finalColor = color * (intensity + 0.008);
+            // --- УНИВЕРСАЛЬНЫЙ ПРЕДОХРАНИТЕЛЬ КОНТРАСТА ---
+            float ambientLight = 0.9; // Чуть снизили базу для безопасности
+            float mouseInfluence = mask * 0.15;
             
-            // Grain (Dithering)
-            finalColor += random(uv) / 180.0;
+            // Вычисляем текущую яркость цвета (Luminance)
+            float luma = dot(color, vec3(0.299, 0.587, 0.114));
+            
+            // Если цвет сам по себе яркий (как зеленый), 
+            // мы снижаем множитель интенсивности, чтобы он не "бил" в 1.0 (белый)
+            float safetyFactor = smoothstep(0.9, 0.4, luma * (ambientLight + mouseInfluence));
+            float intensity = (ambientLight + mouseInfluence) * (n * 0.3 + 0.7) * (0.8 + 0.2 * safetyFactor);
+            
+            // Финальный цвет с ограничением пиковой яркости
+            vec3 finalColor = color * intensity;
+            
+            // Ограничиваем RGB, чтобы ни один канал не уходил в пересвет (белый)
+            // Это оставит текст читаемым даже на самом ярком зеленом
+            finalColor = clamp(finalColor, 0.0, 0.78); 
+
+            // Тонкое зерно
+            finalColor += random(uv) / 150.0;
             
             gl_FragColor = vec4(finalColor, 1.0);
         }
@@ -140,7 +159,6 @@
         uniforms.u_mouse.value.copy(cMouse);
         uniforms.u_time.value = t * 0.001;
         
-        // Плавный переход между темами
         uniforms.u_color1.value.lerp(targetC1, 0.04);
         uniforms.u_color2.value.lerp(targetC2, 0.04);
         

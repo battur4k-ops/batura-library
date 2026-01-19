@@ -1,21 +1,11 @@
-/* ============================================================
-   5-COMPONENTS / _LOGO.SCSS
-   Batura Library | Pure Static Logo Shell
-   ============================================================ */
-
-.b-logo {
-  display: inline-flex;
-  
-  /* 
-     Логотип по умолчанию берет высоту того места, куда ты его положишь.
-     Если это навбар — он будет высотой с навбар. 
-     Если это пустой div — задай высоту родителю.
-  */
-  height: 100%; 
-  
-  svg {
-    height: 100%;
-    width: auto;
-    display: block;
+.ui-button--logo {
+  width: var(--btn-h); padding: 0; aspect-ratio: 1/1;
+  .b-logo { height: 55%; width: 55%; display: flex; align-items: center; justify-content: center;
+    svg { transform: translate3d(var(--logo-balance-x), 0, 0); }
+  }
+  .b-navbar & {
+    --btn-h: var(--nav-content-h);
+    --btn-radius: var(--nav-inner-radius);
+    --_blur: var(--nav-blur);
   }
 }

@@ -25,11 +25,15 @@
 // 7. LAYER 5: COMPONENTS (Интерактивные модули)
 @import '5-components/navbar';
 @import '5-components/button';
-@import '5-components/card';
 @import '5-components/accordion';
 @import '5-components/footer';
 @import '5-components/logo';
-@import '5-components/interface-overlay';
+@import '5-components/static-card';
+@import '5-components/alphabet-nav';
+@import '5-components/logo-button';
+@import '5-components/catalog';
+@import '5-components/b-preview-box';
+
 
 // 8. LAYER 6: UTILITIES (Финальные штрихи)
 @import '6-utilities/adaptive';

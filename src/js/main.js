@@ -1,130 +1,144 @@
+/* ============================================================
+   JS / MAIN.JS
+   Batura Library | Master Logic v7.4 [LEGO & PHYSICS SYNC]
+   ============================================================ */
+
 /**
- * BATURA LIBRARY | MASTER LOGIC V6.0
- * Systems: SmoothScroll (Lenis), NavigationController (Morph), BaturaSlider
+ * [LAW: ZERO_G_STABILITY] 
+ * Мгновенное снятие лоадера.
  */
-import './components/navbar.js';
-import './components/footer.js';
-import './components/expression-filter.js';
-import './components/expression-manager.js';
-import Lenis from 'https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm';
+document.body.classList.remove('is-loading');
 
-class SmoothScroll {
+/* --- 1. ВНУТРЕННИЕ СИСТЕМЫ (Ядро) --- */
+
+/**
+ * VIEWPORT PHYSICS
+ * Следит за элементами в центре экрана. 
+ * Теперь целится только в универсальный класс .b-static-card.
+ */
+class ViewportPhysics {
     constructor() {
-        this.lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothWheel: true
-        });
-
-        const scrollFn = (time) => {
-            this.lenis.raf(time);
-            requestAnimationFrame(scrollFn);
+        this.observer = null;
+        this.config = {
+            root: null,
+            rootMargin: '-35% 0% -35% 0%', 
+            threshold: 0.1
         };
-        requestAnimationFrame(scrollFn);
-    }
-}
-
-class NavigationController {
-    constructor() {
-        this.nav = document.getElementById('mainNav');
-        this.searchInput = document.getElementById('searchInput');
-        this.pageType = document.body.dataset.page || 'home';
-        this.threshold = 60; 
+        this.init();
         
-        if (this.nav) this.init();
+        // Слушаем сигнал о готовности любого контента (каталог или аккордеон)
+        window.addEventListener('batura:contentReady', () => {
+            requestAnimationFrame(() => this.refresh());
+        });
     }
 
     init() {
-        this.applyPageState();
-        // Слушаем скролл с пассивным режимом для производительности
-        window.addEventListener('scroll', () => this.handleMorphology(), { passive: true });
-        this.handleMorphology();
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                entry.target.classList.toggle('is-focused', entry.isIntersecting);
+            });
+        }, this.config);
     }
 
-    handleMorphology() {
-        requestAnimationFrame(() => {
-            const isScrolled = window.scrollY > this.threshold;
-            const hasClass = document.body.classList.contains('is-scrolled');
-
-            if (isScrolled && !hasClass) {
-                document.body.classList.add('is-scrolled');
-            } else if (!isScrolled && hasClass) {
-                document.body.classList.remove('is-scrolled');
-            }
-        });
-    }
-
-    applyPageState() {
-        const searchPages = ['expressions', 'scripting', 'plugins'];
-        if (searchPages.includes(this.pageType)) {
-            document.body.classList.add('has-search');
-            if (this.searchInput) {
-                this.searchInput.placeholder = `Search ${this.pageType}...`;
-            }
-        }
+    refresh() {
+        // LEGO-логика: все наши карточки теперь .b-static-card
+        const targets = document.querySelectorAll('.b-static-card, .b-catalog-section');
+        targets.forEach(el => this.observer.observe(el));
     }
 }
 
-class BaturaSlider {
+/**
+ * THEME CONTROLLER
+ * Chroma Engine: управление глобальным акцентом --theme-accent-rgb.
+ */
+class ThemeController {
     constructor() {
-        this.container = document.getElementById('mainAccordion');
-        if (!this.container) return;
-
-        this.cards = Array.from(this.container.querySelectorAll('.b-card'));
-        this.currentIndex = 0;
-        this.autoplayDelay = 5000;
-        this.intentDelay = 70;
-
+        this.root = document.documentElement;
+        this.defaultColor = '0, 102, 255';
         this.init();
     }
-
     init() {
-        this.cards.forEach((card, index) => {
-            card.addEventListener('mouseenter', () => {
-                this.stopAutoplay();
-                this.hoverTimeout = setTimeout(() => this.setActiveCard(index), this.intentDelay);
-            });
-            card.addEventListener('mouseleave', () => clearTimeout(this.hoverTimeout));
-            card.addEventListener('click', () => { this.stopAutoplay(); this.setActiveCard(index); });
+        document.addEventListener('mouseover', (e) => {
+            const card = e.target.closest('.b-static-card');
+            if (!card) return;
+            const category = card.dataset.category || 'blue';
+            const colorValue = getComputedStyle(this.root).getPropertyValue(`--p-${category}-rgb`).trim();
+            if (colorValue) this.root.style.setProperty('--theme-accent-rgb', colorValue);
         });
-
-        this.container.addEventListener('mouseleave', () => this.startAutoplay());
-        this.setActiveCard(0);
-        this.startAutoplay();
-    }
-
-    setActiveCard(index) {
-        if (this.currentIndex === index && this.cards[index].classList.contains('is-active')) return;
-        const currentActive = this.container.querySelector('.b-card.is-active');
-        if (currentActive) currentActive.classList.remove('is-active');
-
-        void this.cards[index].offsetWidth; 
-
-        requestAnimationFrame(() => {
-            this.currentIndex = index;
-            this.cards[index].classList.add('is-active');
-            if (window.updateBgTheme) window.updateBgTheme(index);
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('.b-static-card')) {
+                this.root.style.setProperty('--theme-accent-rgb', this.defaultColor);
+            }
         });
-    }
-
-    startAutoplay() {
-        if (this.timer || document.hidden) return;
-        this.timer = setInterval(() => {
-            const next = (this.currentIndex + 1) % this.cards.length;
-            this.setActiveCard(next);
-        }, this.autoplayDelay);
-    }
-
-    stopAutoplay() {
-        clearInterval(this.timer);
-        this.timer = null;
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.remove('is-loading');
-    new SmoothScroll();
+/**
+ * NAVIGATION CONTROLLER
+ * Морфология навбара.
+ */
+class NavigationController {
+    constructor() {
+        this.threshold = 60; 
+        window.addEventListener('scroll', () => {
+            document.body.classList.toggle('is-scrolled', window.scrollY > this.threshold);
+        }, { passive: true });
+    }
+}
+
+/* --- 2. УНИВЕРСАЛЬНЫЙ ЗАГРУЗЧИК МОДУЛЕЙ --- */
+
+async function safeImport(path) {
+    try {
+        return await import(path);
+    } catch (error) {
+        console.warn(`Batura System: Module [${path}] is missing. Skipping...`);
+        return null;
+    }
+}
+
+/* --- 3. ГЛАВНЫЙ ДИСПЕТЧЕР (Start Engine) --- */
+
+const startBatura = async () => {
+    // А) Запуск встроенных систем ядра
+    new ThemeController();
     new NavigationController();
-    new BaturaSlider();
-    console.log('Batura System: V6.0 Stable Build Active');
-});
+    new ViewportPhysics();
+
+    // Б) Внешние зависимости (Smooth Scroll)
+    const LenisModule = await safeImport('https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm');
+    if (LenisModule) {
+        const Lenis = LenisModule.default;
+        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+        const scrollFn = (time) => { lenis.raf(time); requestAnimationFrame(scrollFn); };
+        requestAnimationFrame(scrollFn);
+    }
+
+    // В) Компоненты UI (Web Components)
+    await safeImport('./components/navbar.js');
+    await safeImport('./components/footer.js');
+
+    // Г) Динамический Контент (LEGO Constructor)
+    
+    // Если мы на главной — строим Аккордеон
+    if (document.getElementById('mainAccordion')) {
+        const AccModule = await safeImport('./components/accordion-manager.js');
+        if (AccModule) new AccModule.AccordionManager();
+    }
+
+    // Если мы в каталоге — строим Сетку
+    if (document.getElementById('expressionsGrid')) {
+        const CardManagerModule = await safeImport('./components/card-manager.js');
+        if (CardManagerModule) new CardManagerModule.CardManager();
+    }
+
+    // Д) Дополнительные системы (Фильтры)
+    if (document.getElementById('tagsContainer')) {
+        const ExManagerModule = await safeImport('./components/expression-manager.js');
+        if (ExManagerModule) new ExManagerModule.ExpressionManager();
+    }
+
+    console.log('Batura System V7.4: LEGO Architecture Active. Physics Linked.');
+};
+
+startBatura();

@@ -1,106 +1,126 @@
 /* ============================================================
    5-COMPONENTS / _BUTTON.SCSS
-   Batura Library | System Synced v12.2 [Symmetry Lock]
+   Batura Library | Unified Button v22.0 [Global Physics Sync]
    ============================================================ */
 
 .ui-button {
-  /* 1. ГЕОМЕТРИЧЕСКАЯ БАЗА */
+  --btn-h: var(--ui-h-btn-master);
   --btn-radius: calc(var(--radius-master) * 0.4);
   
-  /* Подключаем материал: он ищет --btn-radius-override для кастомизации */
-  @include glass-surface("btn", var(--btn-radius));
-  @include glass-light-layer("btn"); 
+  /* [1. IDLE STATE] - Базовый пассив */
+  --_bg-op: var(--s-glass-op-base);
+  --_stroke-op: var(--s-stroke-op-idle);
+  --_text-op: var(--s-text-op-idle);
+  --_glare-op: 0;
 
-  display: inline-flex; 
+  @include glass-surface(var(--btn-radius));
+  @extend .text-data;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  
-  /* Базовые размеры из _ui.scss */
-  height: var(--ui-h-btn);
+  height: var(--btn-h);
   padding-inline: var(--ui-p-btn);
-  position: relative;
-  
-  /* ТИПОГРАФИКА */
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: var(--ui-fs-btn);
-  text-transform: uppercase;
-  color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
-  line-height: 1;
-  
   cursor: pointer;
-  border: none;
-  outline: none;
-  white-space: nowrap;
-  
-  /* Стабилизация для GPU */
-  -webkit-font-smoothing: antialiased;
-  transform: translate3d(0, 0, 0.1px);
+  z-index: 10;
+  color: rgba(var(--p-white-rgb), var(--_text-op));
 
+  /* Системный двигатель (всегда d-fast) */
   transition: 
-    var(--t-material), 
-    var(--t-text),
-    transform var(--d-fast) var(--e-out),
-    border-radius var(--d-fast) var(--e-out);
+    background-color var(--d-fast) var(--e-out),
+    box-shadow var(--d-fast) var(--e-out),
+    color var(--d-fast) var(--e-out),
+    backdrop-filter var(--d-fast) var(--e-out),
+    border-color var(--d-fast) var(--e-out),
+    transform var(--d-fast) var(--e-out); // Transform уже тут
+  
+  transition-delay: var(--stagger-step);
 
-  &::before { transition: opacity var(--d-fast) var(--e-out); }
-
-  /* --- INTERACTIONS --- */
-  &:hover {
-    --btn-bg-op: var(--s-glass-op-active); 
-    --btn-stroke-op: var(--s-stroke-op-active);
-    --btn-glare-op: 1; 
-    color: rgba(var(--p-white-rgb), var(--s-text-op-hover));
+  /* [2. LOGIC: КАСКАДНЫЙ ХОВЕР (Обычные карточки)] */
+  .b-static-card:hover &, .b-card:hover & {
+    transition-delay: 0s; 
+    --_bg-op: var(--s-glass-op-hover);
+    --_stroke-op: var(--s-stroke-op-hover);
+    --_text-op: var(--s-text-op-hover);
   }
 
-  /* --- MODIFIER: LOGO (The Symmetry Lock) --- */
-  &--logo {
-    /* 
-       [LAW:GEOMETRIC_COHESION]
-       aspect-ratio гарантирует, что ширина ВСЕГДА равна высоте.
-       padding: 0 убирает боковое распирание.
-    */
-    aspect-ratio: 1 / 1; 
-    padding-inline: 0;
-    width: auto; // Позволяет высоте диктовать размер
+  /* Ховер на саму кнопку - Всегда плавно */
+  &.ui-button:hover {
+    transition-delay: 0s;
+    --_bg-op: var(--s-glass-op-active);
+    --_stroke-op: var(--s-stroke-op-active);
+    --_text-op: 1;
+    --_glare-op: var(--s-glare-op-active);
+  }
 
-    .b-logo {
-      height: 55%; // Оптический размер знака внутри квадрата
-      width: 55%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: inherit;
-      
-      svg {
-        height: 100%;
-        width: auto;
-        /* Оптическая компенсация формы буквы B */
-        transform: translate3d(var(--logo-balance-x), 0, 0);
-      }
+  /* [NEW: GLOBAL CLICK PHYSICS]
+     Теперь любая кнопка в системе имеет физический отклик при нажатии */
+  &:active {
+    transform: scale(0.96); // Тот самый эффект сжатия
+    transition-duration: 0.1s; // Мгновенный возврат (Snappy feedback)
+    --_bg-op: var(--s-glass-op-active);
+    --_stroke-op: var(--s-stroke-op-active);
+  }
+
+  /* ============================================================
+     [FIX] ACCORDION INDEPENDENT LOGIC (Warm Start Physics)
+     ============================================================ */
+  .b-accordion & {
+    --_bg-op: var(--s-glass-op-base);
+    --_stroke-op: var(--s-stroke-op-idle);
+    --_text-op: var(--s-text-op-idle);
+    transition-delay: 0s;
+
+    .b-static-card:hover & {
+      --_bg-op: var(--s-glass-op-hover);
+      --_stroke-op: var(--s-stroke-op-hover);
+      --_text-op: var(--s-text-op-hover);
+    }
+
+    &:hover {
+      --_bg-op: var(--s-glass-op-active);
+      --_stroke-op: var(--s-stroke-op-active);
+      --_text-op: 1;
     }
   }
 
-  /* --- CONTEXT: NAVBAR (Dynamic Scaling) --- */
+  /* [3. CONTEXT: OUTSIDE / TAGS / NAVBAR] */
+  &:not(.b-static-card &):not(.b-card &):not(.b-navbar &):not(#tagsContainer &) {
+    --_bg-op: var(--s-glass-op-hover);
+    --_stroke-op: var(--s-stroke-op-hover);
+    --_text-op: var(--s-text-op-hover);
+  }
+
+  /* Логотип: специфическое начертание и чуть более глубокий клик */
+  &--logo {
+    width: var(--btn-h); padding: 0; aspect-ratio: 1/1;
+    &:active { transform: scale(0.92); } // Логотип "тяжелее", поэтому жмется сильнее
+    .b-logo { 
+      position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; color: inherit;
+      transition: color var(--d-fast) var(--e-out), opacity var(--d-fast) var(--e-out);
+      height: 40%; width: 40%; 
+      svg { width: 100%; height: 100%; transform: translate3d(var(--logo-balance-x), 0, 0); }
+    }
+  }
+
   .b-navbar & {
-    /* Навбар диктует высоту — aspect-ratio сделает из неё квадрат */
-    height: var(--nav-content-h);
-    width: var(--nav-content-h);
-    min-width: var(--nav-content-h);
-    padding: 0;
+    --btn-h: var(--nav-content-h);
+    --btn-radius: var(--nav-inner-radius);
+    --_blur: var(--nav-blur);
+    --_bg-op: var(--s-glass-op-base);
+    --_stroke-op: var(--s-stroke-op-idle);
+  }
 
-    /* Применяем вычисленный радиус навбара */
-    --btn-radius-override: var(--nav-inner-radius);
-
-    --btn-bg-op: 0.005; 
-    --btn-stroke-op: var(--s-stroke-op-idle);
-
-    /* Синхронизируем движение с расширением навбара */
-    transition: 
-      var(--t-material),
-      var(--t-text),
-      border-radius var(--d-morph) var(--e-out),
-      height var(--d-morph) var(--e-out),
-      width var(--d-morph) var(--e-out);
+  #tagsContainer & {
+    --btn-radius: 100px;
+    --btn-h: calc(var(--ui-h-btn-master) * 0.9);
+    padding-inline: 24px;
+    transition-delay: 0s;
+    --_bg-op: var(--s-glass-op-hover);
+    --_stroke-op: var(--s-stroke-op-hover);
+    --_glare-op: var(--s-glare-op-hover);
+    --_text-op: var(--s-text-op-hover);
+    &:hover, &.is-active { --_bg-op: var(--s-glass-op-active); --_stroke-op: var(--s-stroke-op-active); --_text-op: 1; }
+    &.is-active { pointer-events: none; cursor: default; }
   }
 }

@@ -1,27 +1,23 @@
 /* ============================================================
    5-COMPONENTS / _NAVBAR.SCSS
-   Batura Library | System Synced v12.8 [Blur Sync & Smooth Morph]
+   Batura Library | System Synced v13.8 [Search Button-Logic]
    ============================================================ */
 
 .b-navbar {
     /* 1. LOCAL TOKENS & GEOMETRY */
     --nav-radius: var(--radius-master);
     --nav-h: var(--nav-h-start);
+    --nav-w-factor: var(--nav-w-start);
+    
     --nav-content-h: calc(var(--nav-h) * var(--nav-content-scale));
     --nav-pad: calc((var(--nav-h) - var(--nav-content-h)) / 2);
     --nav-inner-radius: calc(var(--nav-radius) - var(--nav-pad));
 
-    /* 2. MATERIAL (Синхронизация со слотами) */
-    --nav-bg-op: var(--s-glass-op-base);
-    --nav-stroke-op: var(--s-stroke-op-idle);
-    
-    /* 
-       [FIX] Навбар объявляет свою переменную блюра.
-       Теперь миксин её "услышит" и применит.
-    */
-    --nav-blur: var(--s-glass-blur);
+    /* 2. INTERACTION DNA (Main Bar) */
+    --_bg-op: var(--s-glass-op-base);
+    --_stroke-op: var(--s-stroke-op-idle);
 
-    @include glass-surface("nav", var(--nav-radius));
+    @include glass-surface(var(--nav-radius));
     
     /* 3. LAYOUT */
     position: fixed;
@@ -34,53 +30,84 @@
     padding-inline: var(--nav-pad); 
     display: flex;
     align-items: center;
+    justify-content: space-between;
     
-    /* [STABILITY LOCK] */
     transform: translate3d(0, 0, 0.1px); 
     backface-visibility: hidden;
-    perspective: 1000px;
-    
-    contain: layout;
-    will-change: height, width, border-radius, background-color;
 
     /* 4. MOTION ENGINE */
     transition: 
         height var(--d-morph) var(--e-out),
         width var(--d-morph) var(--e-out),
-        border-radius var(--d-morph) var(--e-out),
-        padding var(--d-morph) var(--e-out),
         background-color var(--d-fast) var(--e-out),
-        box-shadow var(--d-fast) var(--e-out),
+        border-color var(--d-fast) var(--e-out),
         backdrop-filter var(--d-morph) var(--e-out);
 
-    &::before { display: none; } 
+    /* 7. ПОИСКОВЫЙ МОДУЛЬ (ПРАВО) */
+    &__search {
+        display: flex;
+        align-items: center;
+        height: var(--nav-content-h);
+        margin-left: auto;
+        
+        &.is-hidden { display: none; }
+
+        input {
+            @extend .text-data;
+            
+            /* [1. UNIFIED BUTTON PHYSICS] */
+            // 1.1. Обнуляем стандартную рамку, чтобы работал inset box-shadow из миксина
+            border: none; 
+            
+            // 1.2. Применяем твой миксин (он создаст фон и обводку через inset shadow)
+            @include glass-surface(var(--nav-inner-radius));
+            
+            // 1.3. Инициализируем прокси-переменные как в .ui-button (Idle State)
+            --_bg-op: var(--s-glass-op-base);
+            --_stroke-op: var(--s-stroke-op-idle);
+            --_text-op: var(--s-text-op-idle);
+
+            height: 100%;
+            width: clamp(160px, 18vw, 240px);
+            padding-inline: var(--space-sm);
+            
+            outline: none;           
+            appearance: none;        
+            
+            color: rgba(var(--p-white-rgb), var(--_text-op));
+
+            /* [2. SYSTEM ENGINE] */
+            transition: 
+                width var(--d-slow) var(--e-out),
+                background-color var(--d-fast) var(--e-out),
+                box-shadow var(--d-fast) var(--e-out), // Важно для обводки миксина
+                color var(--d-fast) var(--e-out);
+
+            &::placeholder { 
+                color: rgba(var(--p-white-rgb), var(--s-text-op-idle)); 
+                opacity: 0.5;
+            }
+
+            /* [3. HOVER & FOCUS = ACTIVE] */
+            // По твоей просьбе: при наведении ИЛИ фокусе — сразу состояние ACTIVE
+            &:hover, &:focus {
+                --_bg-op: var(--s-glass-op-active);
+                --_stroke-op: var(--s-stroke-op-active);
+                --_text-op: 1;
+            }
+
+            &:focus {
+                width: clamp(220px, 25vw, 360px); 
+            }
+        }
+    }
+
 
     /* 5. SCROLL STATE */
     body.is-scrolled & {
         --nav-h: var(--nav-h-morph);
         --nav-w-factor: var(--nav-w-morph);
-        --nav-bg-op: var(--s-glass-op-hover); 
-        --nav-stroke-op: var(--s-stroke-op-hover);
-        
-        /* При скролле уплотняем блюр для премиального эффекта */
-        --nav-blur: calc(var(--s-glass-blur) * 1.5); 
-
-        /* Передаем состояние вложенным кнопкам */
-        .ui-button {
-            --btn-bg-op: var(--s-glass-op-hover);
-            --btn-stroke-op: var(--s-stroke-op-hover);
-        }
-    }
-
-    &__brand {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        height: var(--nav-content-h);
-        width: var(--nav-content-h);
-        
-        /* Стабилизация вложенного логотипа */
-        transform: translateZ(0);
+        --_bg-op: var(--s-glass-op-hover); 
+        --_stroke-op: var(--s-stroke-op-hover);
     }
 }

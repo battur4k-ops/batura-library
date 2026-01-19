@@ -1,7 +1,9 @@
 /**
  * BATURA LIBRARY | WEB COMPONENTS
- * Unified Footer v6.6 [Gravity Anchor]
+ * Unified Footer v7.0 [Data-Driven Edition]
  */
+
+import { FOOTER_DATA } from '../data/footer-data.js';
 
 class BaturaFooter extends HTMLElement {
     connectedCallback() {
@@ -9,19 +11,17 @@ class BaturaFooter extends HTMLElement {
     }
 
     render() {
+        const { brand, groups, bottom } = FOOTER_DATA;
+
         this.innerHTML = `
             <footer class="b-footer l-container">
                 <div class="b-footer__grid">
                     
                     <!-- BRAND COLUMN -->
                     <div class="b-footer__brand l-flow">
-                        <span class="text-data">Batura Library</span>
-                        <p class="text-body">
-                            Архитектура стабильна. Кнопки статичны. <br>
-                            Разрабатываем инструменты будущего для тех, кто создает движение сегодня.
-                        </p>
+                        <span class="text-data">${brand.label}</span>
+                        <p class="text-body">${brand.description}</p>
                         
-                        <!-- Логотип: Визуальный якорь -->
                         <div class="b-footer__logo">
                             <div class="b-logo">
                                 <svg viewBox="0 0 796 1027" xmlns="http://www.w3.org/2000/svg">
@@ -31,34 +31,34 @@ class BaturaFooter extends HTMLElement {
                         </div>
                     </div>
 
-                    <!-- RESOURCES -->
-                    <div class="b-footer__group">
-                        <span class="text-data">Resources</span>
-                        <div class="l-flow" style="--space-md: var(--space-xs)">
-                            <a href="#" class="b-footer__link">Main Site</a>
-                            <a href="https://t.me/batur4k0" target="_blank" class="b-footer__link">Telegram</a>
-                            <a href="#" class="b-footer__link">Donation</a>
+                    <!-- DYNAMIC GROUPS (Resources, Connect, etc.) -->
+                    ${groups.map(group => `
+                        <div class="b-footer__group">
+                            <span class="text-data">${group.title}</span>
+                            <div class="l-flow">
+                                ${group.links.map(link => `
+                                    <a href="${link.url}" 
+                                       class="b-footer__link" 
+                                       ${link.target ? `target="${link.target}"` : ''}>
+                                        ${link.label}
+                                    </a>
+                                `).join('')}
+                            </div>
                         </div>
-                    </div>
+                    `).join('')}
 
-                    <!-- CONNECT -->
-                    <div class="b-footer__group">
-                        <span class="text-data">Connect</span>
-                        <div class="l-flow" style="--space-md: var(--space-xs)">
-                            <a href="mailto:hello@batura.me" class="b-footer__link">Email Me</a>
-                            <a href="#" class="b-footer__link">Support</a>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- BOTTOM TERMINAL -->
                 <div class="b-footer__bottom">
-                    <span class="text-data">© 2026 BATURA SYSTEM</span>
-                    <span class="text-data">V6.6 GRAVITY_CORE</span>
+                    <span class="text-data">${bottom.copyright}</span>
+                    <span class="text-data">${bottom.version}</span>
                 </div>
             </footer>
         `;
     }
 }
 
-customElements.define('batura-footer', BaturaFooter);
+if (!customElements.get('batura-footer')) {
+    customElements.define('batura-footer', BaturaFooter);
+}

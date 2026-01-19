@@ -1,0 +1,107 @@
+/* ============================================================
+   5-COMPONENTS / _STATIC-CARD.SCSS
+   Batura Library | Universal Card [Height & Spacing Sync]
+   ============================================================ */
+
+.b-static-card {
+  --s-card-radius: var(--radius-master);
+  --_preview-radius: calc(var(--s-card-radius) - (var(--p-card) * 0.5));
+
+  @include glass-surface(var(--s-card-radius));
+  
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%; 
+
+  /* [STATES] */
+  --_bg-op: var(--s-glass-op-base);
+  --_stroke-op: var(--s-stroke-op-idle);
+  --_text-op: var(--s-text-op-idle);
+
+  &.is-focused, &:hover { transition-delay: 0s; }
+  &.is-focused { 
+    --_stroke-op: var(--s-stroke-op-hover); 
+    --_text-op: var(--s-text-op-hover); 
+    --_bg-op: var(--s-glass-op-hover); // Карточка чуть подсвечивается при фокусе
+  }
+
+  &:hover {
+    --_bg-op: var(--s-glass-op-hover);
+    --_stroke-op: var(--s-stroke-op-active);
+    --_glare-op: var(--s-glare-op-hover);
+    --_text-op: 1;
+  }
+
+  &__viewport {
+    padding: var(--p-card);
+    @include flow-engine(var(--space-md)); 
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+    border-radius: inherit; 
+    z-index: 1;
+    position: relative;
+    overflow: hidden; 
+  }
+
+  &__top { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
+  &__index { @extend .text-data; font-weight: 400; }
+
+  &__body {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    h3, p { margin: 0; }
+    .text-heading { margin-left: var(--text-offset-heading); }
+    & > * + * { margin-top: var(--space-xs); }
+    .b-static-card__tags { margin-top: var(--space-xs); }
+  }
+
+  &__actions { 
+    display: flex; 
+    justify-content: flex-start; 
+    width: 100%; 
+    position: relative; 
+    z-index: 10;
+    margin-top: var(--space-sm); 
+  }
+
+  /* ============================================================
+     MOBILE LOGIC: AUTO-ACTIVE ON SCROLL
+     ============================================================ */
+  @media (max-width: 768px) {
+    
+    // Когда карточка в фокусе при скролле — переводим её в ACTIVE
+    &.is-focused {
+      --_bg-op: var(--s-glass-op-hover);    // Легкий подсвет фона
+      --_stroke-op: var(--s-stroke-op-active); // Максимальная обводка
+      --_text-op: 1;                        // Максимальная яркость текста
+
+      // Кнопка тоже загорается в ACTIVE
+      .ui-button {
+        --_bg-op: var(--s-glass-op-active);
+        --_stroke-op: var(--s-stroke-op-active);
+        --_text-op: 1;
+        transition-delay: 0s;
+      }
+    }
+
+    // Тактильный отклик при нажатии
+    .ui-button {
+      &:active {
+        background-color: rgba(var(--p-white-rgb), 0.1) !important; // Вспышка при таче
+        transform: scale(0.95);
+        transition-duration: 0.1s;
+      }
+    }
+  }
+
+  .b-preview-box {
+    --local-preview-radius: var(--_preview-radius);
+    @media (max-width: 500px) {
+       --local-preview-radius: calc(var(--s-card-radius) - var(--space-sm));
+    }
+  }
+}

@@ -1,37 +1,173 @@
 /* ============================================================
    5-COMPONENTS / _ACCORDION.SCSS
+   Batura Library | System Synced v16.1 [Geometric Sync]
    ============================================================ */
+
+@keyframes cardItemEntrance {
+  0% { opacity: 0; transform: translate3d(var(--entrance-offset), 0, 0.1px); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0.1px); }
+}
 
 .b-accordion {
   display: flex;
-  
-  /* 
-     ФИКС ПРАВОЙ ГРАНИЦЫ:
-     Мы расширяем ширину на 2 юнита (влево и вправо), 
-     чтобы компенсировать отрицательный margin.
-  */
-  width: calc(100% + (var(--unit) * 2));
-  
-  height: clamp(450px, 65vh, 700px);
+  width: 100%;
   gap: var(--space-sm);
-  
-  align-items: stretch;
-  justify-content: flex-start;
-  
-  /* 
-     Центрируем расширенный аккордеон:
-     margin: -4px (юнит) идеально выравнивает его по сетке,
-     теперь он будет выступать одинаково с обеих сторон.
-  */
-  margin-inline: calc(var(--unit) * -1);
-  padding: var(--unit);
-  
-  overflow: visible;
+  height: clamp(500px, 70vh, 750px);
+  flex-direction: row;
 
-  /* Убираем ограничения для вложенных карточек */
-  & > .b-card {
-    max-width: none;
-    /* Гарантируем, что карточки всегда пытаются занять все место */
-    flex-shrink: 0; 
+  .b-static-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    flex: var(--card-grow-base) 0 10%;
+    min-width: 60px;
+    
+    --s-card-radius: var(--radius-master);
+    @include glass-surface(var(--s-card-radius));
+
+    transition: flex var(--d-slow) var(--e-out), 
+                background-color var(--d-fast) var(--e-out), 
+                box-shadow var(--d-fast) var(--e-out);
+
+    &__index {
+      @extend .text-data;
+      position: absolute; top: var(--p-card); left: var(--p-card);
+      z-index: 10;
+      color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+      transition: color var(--d-fast) var(--e-out);
+    }
+
+    &__deco {
+      @extend .text-data;
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-180deg);
+      writing-mode: vertical-rl; white-space: nowrap; pointer-events: none;
+      z-index: 5;
+      color: rgba(var(--p-white-rgb), var(--s-text-op-idle));
+      transition: opacity var(--d-fast) var(--e-out), visibility var(--d-fast) var(--e-out);
+    }
+
+    /* Логика декора и индекса при наведении на карту */
+    &:hover, &.is-active {
+        .b-static-card__index { color: rgba(var(--p-white-rgb), var(--s-text-op-hover)); }
+        .b-static-card__deco {
+            opacity: 0; visibility: hidden;
+            transition-property: none; transition-duration: 0s;
+        }
+    }
+
+    &__viewport {
+      height: 100%; padding: var(--p-card);
+      display: flex; flex-direction: column; justify-content: flex-end; 
+      opacity: 0; visibility: hidden; z-index: 7;
+      flex: none; 
+    }
+
+    &.is-active {
+      flex: var(--card-grow-active) 0 10%;
+      cursor: default;
+      --_stroke-op: var(--s-stroke-op-hover);
+
+      .b-static-card__viewport {
+        opacity: 1; visibility: visible;
+        & > * {
+          animation: cardItemEntrance var(--d-base) var(--e-out) both;
+          &:nth-child(1) { animation-delay: calc(var(--entrance-delay) + 0.1s); }
+          &:nth-child(2) { animation-delay: calc(var(--entrance-delay) + 0.2s); }
+        }
+      }
+
+      .b-static-card__body {
+        flex: none; 
+        margin-bottom: 0; 
+        
+        h3, p { margin: 0; }
+        
+        .text-data { 
+          display: block; 
+          margin-bottom: var(--space-xs); 
+          opacity: var(--s-text-op-hover); 
+        }
+
+        .text-heading { margin-left: var(--text-offset-heading); }
+        .text-heading + .text-body { margin-top: var(--space-xs); }
+      }
+
+      .b-static-card__actions {
+        margin-top: var(--space-sm);
+        display: flex;
+      }
+
+      &:hover {
+        flex: var(--card-grow-active-hover) 0 10%;
+        --_bg-op: var(--s-glass-op-hover);
+        --_stroke-op: var(--s-stroke-op-active);
+      }
+    }
+
+    &:not(.is-active):hover {
+      flex: calc(var(--card-grow-base) * 1.4) 0 10%;
+      --_bg-op: var(--s-glass-op-hover);
+    }
+  }
+
+/* ============================================================
+     MOBILE ADAPTIVE (Vertical Stack)
+     ============================================================ */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: clamp(600px, 80vh, 850px);
+
+    .b-static-card {
+      min-width: 100%;
+      min-height: 55px; 
+      flex: var(--card-grow-base) 0 55px;
+      border-radius: 100px; 
+
+      &__index {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      &__deco {
+        writing-mode: horizontal-tb; 
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+      }
+
+      &.is-active {
+        flex: 6 0 10%; 
+        border-radius: var(--s-card-radius);
+
+        .b-static-card__index {
+          top: var(--p-card);
+          transform: translateY(0);
+        }
+
+        /* Кнопка в активной папке (Mobile UX) */
+        .ui-button {
+          // Состояние по умолчанию при открытии папки (Hover look)
+          --_bg-op: var(--s-glass-op-hover);
+          --_stroke-op: var(--s-stroke-op-hover);
+          --_text-op: var(--s-text-op-hover);
+          transition-delay: 0s;
+
+          // Состояние при непосредственном нажатии пальцем (Active look)
+          &:active {
+            --_bg-op: var(--s-glass-op-active);
+            --_stroke-op: var(--s-stroke-op-active);
+            --_text-op: 1;
+            transform: scale(0.98); // Легкий тактильный отклик
+          }
+        }
+
+        &:hover {
+          flex: 7.5 0 10%; 
+        }
+      }
+    }
   }
 }
+   

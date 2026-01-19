@@ -1,12 +1,10 @@
 /* ============================================================
    3-OBJECTS / _LAYOUT.SCSS
-   Batura Library | Master System v7.0 [Structural Backbone]
+   Batura Library | System v19.9 [Indestructible Grid]
    ============================================================ */
 
 /**
- * 1. FLOW ENGINE
- * Автоматизация вертикальных ритмов. 
- * Гарантирует, что между блоками всегда системный зазор.
+ * 1. FLOW ENGINE (Твой оригинал)
  */
 @mixin flow-engine($gap: var(--space-md)) {
   display: flex;
@@ -17,47 +15,47 @@
     margin-top: $gap; 
   }
 
-  /* Оптическая компенсация для типографики в потоке */
   & > .text-data + .text-hero,
   & > .text-data + .text-heading,
   & > .text-hero + .text-body,
   & > .text-heading + .text-body {
     margin-top: var(--space-xs);
   }
+
+  & > .text-body + .l-flex-group {
+    margin-top: var(--space-lg);
+  }
 }
 
-.l-flow { 
-  @include flow-engine; 
+.l-flow { @include flow-engine; }
+
+/**
+ * 2. UNIVERSAL FLEX OBJECTS
+ */
+.l-flex-group {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: var(--space-sm); 
+  align-items: flex-start;
+  width: 100%;
 }
 
 /**
- * 2. APP WRAPPER
- * Глобальная оболочка приложения. 
- * Центрирует весь контент относительно физического экрана.
+ * 3. APP STRUCTURE
  */
 #app-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    /* Уровень Google: предотвращаем горизонтальный сдвиг при открытии оверлеев */
-    align-items: center; 
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center; 
 }
 
-/**
- * 3. APP ROOT ( Spine )
- * Главный вертикальный позвоночник.
- */
 #app-root {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
-  
-  /* 
-     ФОРМУЛА "ВОЗДУХА":
-     Верхний отступ учитывает высоту навбара, его положение и геройский зазор.
-  */
   padding-top: calc(var(--nav-h) + var(--nav-top) + var(--hero-offset));
   padding-bottom: var(--p-page-bottom);
   gap: var(--s-block-gap);
@@ -65,21 +63,71 @@
 }
 
 /**
- * 4. CONTAINER
- * Ограничитель ширины и математический центр системы.
+ * 4. CONTAINERS
  */
 .l-container {
   width: 100%;
-  
-  /* [LAW:SINGLE_SOURCE_OF_TRUTH] - Ссылка на _spacing.scss */
   max-width: var(--layout-max-width);
-  
-  /* Истинное центрирование по оси X=0 */
   margin-inline: auto;
-  
-  /* Системный буфер от краев экрана */
   padding-inline: var(--p-site-side);
-  
   box-sizing: border-box;
   position: relative;
+}
+
+/**
+ * 5. EXPRESSIONS CATALOG SYSTEM
+ */
+#expressionsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl); 
+  width: 100%;
+}
+
+.b-catalog-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.b-catalog-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm); 
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(var(--p-white-rgb), 0.05);
+  
+  .letter {
+    font-family: var(--font-main);
+    font-size: clamp(24px, 4vw, 36px); 
+    font-weight: 200;
+    line-height: 1;
+    text-transform: uppercase;
+    color: rgba(var(--p-white-rgb), 0.35);
+    margin: 0;
+  }
+
+  .index {
+    @extend .text-data;
+    font-size: var(--fs-caption);
+    opacity: 0.4;
+    letter-spacing: 0.15em;
+  }
+}
+
+/**
+ * ГРИД-СЕТКА: Адаптивная устойчивость
+ * [FIXED]: На мобилках принудительно 100% ширины.
+ */
+.l-grid-expressions {
+  display: grid;
+  /* Desktop: авто-заполнение. Mobile: 100% ширина. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  gap: var(--space-md);
+  width: 100%;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr; 
+    gap: var(--space-sm);
+  }
 }

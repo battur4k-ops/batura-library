@@ -1,0 +1,50 @@
+/* ============================================================
+   4-COMPONENTS / _B-PREVIEW-BOX.SCSS
+   ============================================================ */
+
+.b-preview-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  
+  /* Берем радиус, который нам посчитала карточка выше */
+  border-radius: var(--local-preview-radius, var(--radius-inner));
+  
+  background-color: rgba(var(--p-black-rgb), var(--s-glare-op-hover));
+  backdrop-filter: blur(var(--s-glass-blur));
+  border: var(--s-stroke-width) solid rgba(var(--p-white-rgb), 0.05);
+  
+  overflow: hidden; 
+  transition: 
+    background-color var(--d-fast) var(--e-out), 
+    border-color var(--d-base) var(--e-out),
+    border-radius var(--d-base) var(--e-out);
+
+  &::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(var(--theme-accent-rgb), var(--s-glare-op-hover)), transparent 75%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(var(--p-white-rgb), 0.02) 1px, transparent 1px);
+    background-size: var(--space-sm) var(--space-sm);
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+
+  &__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    /* КРИТИЧЕСКИЙ ФИКС: Чтобы контент внутри не был квадратным */
+    border-radius: inherit; 
+  }
+}

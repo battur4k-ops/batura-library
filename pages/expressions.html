@@ -1,107 +1,61 @@
+<!-- File: ./pages/expressions.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expressions | Batura Library</title>
-    
-    <!-- SYSTEM FONTS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    <!-- CORE ARCHITECTURE (Fixed relative path) -->
+    <!-- Основной CSS бандл v21.0 -->
     <link rel="stylesheet" href="../src/scss/main.css">
 </head>
-<body class="is-loading" data-page="expressions">
-
-    <!-- LAYER: BACKGROUND SHADER -->
+<body class="is-loading">
+    <!-- Слой цифровой физики -->
     <canvas id="liquid-bg-canvas"></canvas>
-
-    <!-- LAYER: UNIFIED NAVIGATION -->
+    
+    <!-- Системные веб-компоненты -->
     <batura-navbar></batura-navbar>
 
     <div id="app-wrapper">
-        
-        <!-- MAIN APP FLOW -->
         <main id="app-root">
             
-            <!-- SECTION 1: HERO & FILTERS -->
-            <section class="l-container">
+            <!-- HEADER SECTION -->
+            <section class="l-container p-page-v">
+                <!-- l-flow: автоматизирует вертикальные ритмы -->
                 <div class="l-flow">
-                    <span class="text-data">Automation // AE_Expressions</span>
+                    <span class="text-data">// AE_LIBRARY</span>
                     <h1 class="text-hero">Expressions</h1>
                     <p class="text-body">
-                        Библиотека оптимизированных выражений для After Effects. <br>
-                        Математика движения, переведенная в чистый код для ваших проектов.
+                        Библиотека математических решений для After Effects. 
+                        Автоматизируй движение, сохраняя полный контроль над физикой кадра.
                     </p>
-
-                    <!-- НОВАЯ КНОПКА: Добавить выражение -->
-                    <button class="ui-button" onclick="window.exprManager.openAddExpressionInterface()" style="margin-top: var(--space-md);">
-                        <span class="text-data" style="margin-right: var(--space-xs);">+</span> Добавить новое выражение
-                    </button>
-
-                    <!-- FILTER CONTAINER: Сюда JS-контроллер вставит теги -->
-                    <div id="filter-container" style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-md);">
-                        <!-- Dynamic Tags Injected Here -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 2: DYNAMIC GRID -->
-            <section class="l-container">
-                <!-- 
-                    EXPRESSIONS GRID: 
-                    Сюда ExpressionManager будет рендерить карточки из своего массива данных.
-                -->
-                <div id="expressions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-md);">
-                    <!-- Dynamic Cards Injected Here -->
-                </div>
-            </section>
-
-            <!-- UNIFIED FOOTER -->
-            <batura-footer></batura-footer>
-
-        </main>
-
-        <!-- 
-            LAYER: INTERFACE OVERLAY 
-            Этот слой вынесен за пределы <main>, чтобы мы могли скрыть основной контент,
-            оставив интерфейс активным поверх шейдера.
-            Его содержимое будет динамически загружаться/обновляться через JavaScript.
-        -->
-        <div id="interface-overlay" class="b-interface-overlay">
-            <div class="b-interface-overlay__content">
-                <div class="l-flow" style="max-width: 600px; margin: 0 auto; text-align: left;">
-                    <span class="text-data">// NEW_EXPRESSION_ENTRY</span>
-                    <h2 class="text-heading" style="text-align: center;">Добавить новое выражение</h2>
                     
-                    <div class="l-flow" style="--space-md: var(--space-sm);">
-                        <label for="expression-title" class="text-data" style="display: block; margin-bottom: var(--space-xs);">Название:</label>
-                        <input type="text" id="expression-title" class="ui-input" placeholder="Введите название выражения...">
-                    </div>
-
-                    <div class="l-flow" style="--space-md: var(--space-sm); margin-top: var(--space-md);">
-                        <label for="expression-description" class="text-data" style="display: block; margin-bottom: var(--space-xs);">Описание:</label>
-                        <textarea id="expression-description" class="ui-textarea" placeholder="Подробное описание выражения..." rows="5"></textarea>
-                    </div>
-
-                    <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg); justify-content: center;">
-                        <button class="ui-button js-add-expression">
-                            Добавить выражение
-                        </button>
-                        <button class="ui-button ui-button--secondary" onclick="window.exprManager.closeInterface()">
-                            Отмена
-                        </button>
+                    <!-- 
+                         l-flex-group: Универсальная горизонтальная сетка.
+                         Именно этот класс заставит кнопки "разлипнуть" и встать в ряд.
+                    -->
+                    <div class="l-flex-group" id="tagsContainer">
+                        <!-- Кнопки-фильтры рендерятся через ExpressionManager.js -->
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
+            <!-- CATALOG SECTION 
+                 Сюда CardManager.js отрисует группы INDEX_A, INDEX_B и т.д.
+            -->
+            <section class="l-container">
+                <div id="expressionsGrid">
+                    <!-- Сюда вставляется динамическая сетка l-grid-expressions -->
+                </div>
+            </section>
+
+            <batura-footer></batura-footer>
+        </main>
     </div>
 
-    <!-- JS ASSETS -->
+    <!-- Зависимости -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Логика систем -->
     <script src="../src/js/background.js"></script>
     <script src="../src/js/main.js" type="module"></script>
 </body>
