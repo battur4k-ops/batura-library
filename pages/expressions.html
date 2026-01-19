@@ -36,6 +36,11 @@
                         Математика движения, переведенная в чистый код для ваших проектов.
                     </p>
 
+                    <!-- НОВАЯ КНОПКА: Добавить выражение -->
+                    <button class="ui-button" onclick="window.exprManager.openAddExpressionInterface()" style="margin-top: var(--space-md);">
+                        <span class="text-data" style="margin-right: var(--space-xs);">+</span> Добавить новое выражение
+                    </button>
+
                     <!-- FILTER CONTAINER: Сюда JS-контроллер вставит теги -->
                     <div id="filter-container" style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-md);">
                         <!-- Dynamic Tags Injected Here -->
@@ -61,37 +66,43 @@
 
         <!-- 
             LAYER: INTERFACE OVERLAY 
-            Вынесен за пределы <main>, чтобы мы могли скрыть основной контент,
+            Этот слой вынесен за пределы <main>, чтобы мы могли скрыть основной контент,
             оставив интерфейс активным поверх шейдера.
+            Его содержимое будет динамически загружаться/обновляться через JavaScript.
         -->
         <div id="interface-overlay" class="b-interface-overlay">
             <div class="b-interface-overlay__content">
-                <div class="l-flow" style="align-items: center; text-align: center;">
-                    <span class="text-data">// SYSTEM_INTERFACE_v1.0</span>
-                    <h2 class="text-heading">Laboratory <br> Interface</h2>
-                    <p class="text-body">Здесь будут располагаться ваши контроллеры и превью кода.</p>
+                <div class="l-flow" style="max-width: 600px; margin: 0 auto; text-align: left;">
+                    <span class="text-data">// NEW_EXPRESSION_ENTRY</span>
+                    <h2 class="text-heading" style="text-align: center;">Добавить новое выражение</h2>
                     
-                    <!-- Временная кнопка закрытия для теста (потом уберем) -->
-                    <button class="ui-button" onclick="window.exprManager.closeInterface()" style="margin-top: var(--space-lg);">
-                        Close Lab
-                    </button>
+                    <div class="l-flow" style="--space-md: var(--space-sm);">
+                        <label for="expression-title" class="text-data" style="display: block; margin-bottom: var(--space-xs);">Название:</label>
+                        <input type="text" id="expression-title" class="ui-input" placeholder="Введите название выражения...">
+                    </div>
+
+                    <div class="l-flow" style="--space-md: var(--space-sm); margin-top: var(--space-md);">
+                        <label for="expression-description" class="text-data" style="display: block; margin-bottom: var(--space-xs);">Описание:</label>
+                        <textarea id="expression-description" class="ui-textarea" placeholder="Подробное описание выражения..." rows="5"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg); justify-content: center;">
+                        <button class="ui-button js-add-expression">
+                            Добавить выражение
+                        </button>
+                        <button class="ui-button ui-button--secondary" onclick="window.exprManager.closeInterface()">
+                            Отмена
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- JS ASSETS (Fixed relative paths) -->
+    <!-- JS ASSETS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="../src/js/background.js"></script>
-    <!-- 
-        ГЛАВНЫЙ ВХОД:
-        Убедись, что в main.js импортированы:
-        - footer.js
-        - navbar.js
-        - expression-filter.js
-        - expression-manager.js
-    -->
     <script src="../src/js/main.js" type="module"></script>
 </body>
 </html>

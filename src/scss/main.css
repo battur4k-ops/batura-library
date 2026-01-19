@@ -1014,4 +1014,76 @@ body.is-scrolled .b-navbar .ui-button {
   height: 100%;
   width: auto;
   display: block;
+}
+
+/* ============================================================
+   5-COMPONENTS / _INTERFACE-OVERLAY.SCSS
+   Batura Library | Expression Lab Overlay
+   ============================================================ */
+.b-interface-overlay {
+  /* 1. LAYER (Слой) */
+  position: fixed;
+  inset: 0; /* Растягиваем на весь экран */
+  z-index: var(--z-overlay); /* Используем Z-index для оверлеев из _layers.scss */
+  /* 2. MATERIAL (Материал) */
+  /* Применяем "стеклянный" эффект из _glass.scss */
+  position: relative;
+  /* Принудительно используем переменную радиуса из компонента */
+  border-radius: var(--overlay-radius, var(--radius-master));
+  /* Инициализация слотов (Symmetry Lock) */
+  --overlay-bg-op: var(--s-glass-op-base);
+  --overlay-stroke-op: var(--s-stroke-op-idle);
+  /* 
+     [FIX] Миксин теперь не перезаписывает переменную блюра, 
+     а берет её из компонента. Если её там нет — берет глобальный токен.
+  */
+  background-color: rgba(var(--m-glass-base-rgb), var(--overlay-bg-op));
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--overlay-stroke-op));
+  backdrop-filter: blur(var(--overlay-blur, var(--s-glass-blur)));
+  -webkit-backdrop-filter: blur(var(--overlay-blur, var(--s-glass-blur)));
+  /* [ANTI-JITTER] Стабилизация для GPU */
+  transform: translate3d(0, 0, 0.1px);
+  backface-visibility: hidden;
+  border: none;
+  overflow: hidden;
+  /* Метроном системы */
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out);
+  transition: background-color var(--d-fast) var(--e-out), box-shadow var(--d-fast) var(--e-out), border-radius var(--d-morph) var(--e-out), backdrop-filter var(--d-morph) var(--e-out), -webkit-backdrop-filter var(--d-morph) var(--e-out);
+  /* Начальное состояние: скрыто */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Не перехватываем события, когда скрыт */
+  transition: opacity var(--d-base) var(--e-out); /* Плавное появление/исчезновение */
+  /* Центрируем содержимое */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Ограничиваем максимальную ширину и добавляем внутренние отступы */
+}
+.b-interface-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 0%, rgba(var(--m-glass-base-rgb), var(--s-glare-op-hover)), transparent);
+  box-shadow: inset 0 0 0 var(--s-stroke-width) rgba(var(--m-glass-base-rgb), var(--s-stroke-op-active));
+  opacity: var(--overlay-glare-op, 0);
+  transition: opacity var(--d-fast) var(--e-out);
+}
+.b-interface-overlay__content {
+  width: 100%;
+  max-width: var(--layout-max-width); /* Из _spacing.scss */
+  padding: var(--space-lg); /* Из _spacing.scss */
+  box-sizing: border-box;
+  position: relative; /* Для позиционирования внутренних элементов */
+}
+
+/* Класс на body для управления видимостью оверлея */
+body.interface-is-open .b-interface-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto; /* Перехватываем события, когда активен */
 }/*# sourceMappingURL=main.css.map */

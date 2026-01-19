@@ -1,0 +1,45 @@
+/* ============================================================
+   5-COMPONENTS / _INTERFACE-OVERLAY.SCSS
+   Batura Library | Expression Lab Overlay
+   ============================================================ */
+
+.b-interface-overlay {
+  /* 1. LAYER (Слой) */
+  position: fixed;
+  inset: 0; /* Растягиваем на весь экран */
+  z-index: var(--z-overlay); /* Используем Z-index для оверлеев из _layers.scss */
+
+  /* 2. MATERIAL (Материал) */
+  /* Применяем "стеклянный" эффект из _glass.scss */
+  @include glass-surface("overlay"); 
+  @include glass-light-layer("overlay");
+
+  /* Начальное состояние: скрыто */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Не перехватываем события, когда скрыт */
+  transition: opacity var(--d-base) var(--e-out); /* Плавное появление/исчезновение */
+
+  /* Центрируем содержимое */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Ограничиваем максимальную ширину и добавляем внутренние отступы */
+  &__content {
+    width: 100%;
+    max-width: var(--layout-max-width); /* Из _spacing.scss */
+    padding: var(--space-lg); /* Из _spacing.scss */
+    box-sizing: border-box;
+    position: relative; /* Для позиционирования внутренних элементов */
+  }
+}
+
+/* Класс на body для управления видимостью оверлея */
+body.interface-is-open {
+  .b-interface-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto; /* Перехватываем события, когда активен */
+  }
+}

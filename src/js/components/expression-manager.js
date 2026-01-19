@@ -1,6 +1,6 @@
 /**
  * BATURA LIBRARY | EXPRESSION MANAGER
- * Core System for handling data & overlays v1.1
+ * Core System for handling data & overlays v1.2 (with Add functionality & Persistence)
  */
 
 class ExpressionManager {
@@ -8,20 +8,12 @@ class ExpressionManager {
         this.grid = document.getElementById('expressions-grid');
         this.overlay = document.getElementById('interface-overlay');
         
-        this.data = [
-            {
-                id: 'elastic-bounce',
-                title: 'Elastic Bounce',
-                tag: 'physics',
-                desc: 'Инерционный отскок с затуханием для любых свойств.'
-            },
-            {
-                id: 'smart-loop',
-                title: 'Smart Loop',
-                tag: 'utility',
-                desc: 'Бесконечный цикл с защитой от обрезки слоев.'
-            }
-        ];
+        // Получаем ссылки на элементы формы в оверлее
+        this.titleInput = this.overlay.querySelector('#expression-title');
+        this.descriptionInput = this.overlay.querySelector('#expression-description');
+        this.addExpressionButton = this.overlay.querySelector('.js-add-expression');
+
+        this.data = this.loadExpressions(); // Загружаем данные при инициализации
 
         if (this.grid) this.init();
     }
@@ -29,9 +21,50 @@ class ExpressionManager {
     init() {
         this.renderCards();
         this.bindEvents();
+        
+        // Связываем кнопку "Добавить выражение" в оверлее
+        if (this.addExpressionButton) {
+            this.addExpressionButton.addEventListener('click', () => this.handleAddExpression());
+        }
+    }
+
+    loadExpressions() {
+        try {
+            const storedData = localStorage.getItem('baturaExpressions');
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                // Если данные из localStorage пустые или некорректные, используем дефолтные
+                return parsedData.length > 0 ? parsedData : this.getDefaultExpressions();
+            }
+        } catch (e) {
+            console.error("Error loading expressions from localStorage", e);
+        }
+        // Дефолтные данные, если localStorage пуст или ошибка
+        return this.getDefaultExpressions();
+    }
+
+    getDefaultExpressions() {
+        return [
+            {
+                id: 'chain-core',
+                title: 'Chain-Core',
+                tag: 'EXPRESSION',
+                desc: 'Инновационный экспрешн для связывания свойств и создания сложных динамических систем.'
+            }
+        ];
+    }
+
+    saveExpressions() {
+        try {
+            localStorage.setItem('baturaExpressions', JSON.stringify(this.data));
+        } catch (e) {
+            console.error("Error saving expressions to localStorage", e);
+        }
     }
 
     renderCards() {
+        if (!this.grid) return; // Проверка на существование grid
+
         this.grid.innerHTML = this.data.map(item => `
             <div class="b-card b-card--static">
                 <div class="b-card__viewport">
@@ -49,23 +82,61 @@ class ExpressionManager {
     }
 
     bindEvents() {
-        // Делегирование событий: слушаем клик на всей сетке
+        // Делегирование событий для кнопок "Open Interface" на карточках
         this.grid.addEventListener('click', (e) => {
             const btn = e.target.closest('.js-open-interface');
             if (btn) {
                 const id = btn.dataset.id;
-                this.openInterface(id);
+                // Сейчас это просто логирование, но в будущем можно открывать интерфейс редактирования
+                console.log(`Batura System: Opening interface for existing expression [${id}]`);
+                this.openInterface(); // Открываем оверлей (сейчас он показывает форму добавления)
             }
         });
     }
 
-    openInterface(id) {
-        console.log(`Batura System: Opening interface for [${id}]`);
+    // Метод для открытия интерфейса добавления нового выражения
+    openAddExpressionInterface() {
+        document.body.classList.add('interface-is-open');
+        if (this.titleInput) this.titleInput.value = ''; // Очищаем поля
+        if (this.descriptionInput) this.descriptionInput.value = '';
+        if (this.titleInput) this.titleInput.focus(); // Устанавливаем фокус на первое поле
+    }
+
+    // Обработчик для кнопки "Добавить выражение" в оверлее
+    handleAddExpression() {
+        const title = this.titleInput ? this.titleInput.value.trim() : '';
+        const desc = this.descriptionInput ? this.descriptionInput.value.trim() : '';
+
+        if (!title || !desc) {
+            alert('Пожалуйста, введите название и описание выражения.');
+            return;
+        }
+
+        const newId = 'expr-' + Date.now(); // Простой уникальный ID
+        const newExpression = {
+            id: newId,
+            title: title,
+            tag: 'EXPRESSION', // По умолчанию всегда 'EXPRESSION' для новых
+            desc: desc
+        };
+
+        this.data.push(newExpression);
+        this.saveExpressions();
+        this.renderCards(); // Перерисовываем сетку, чтобы показать новую карточку
+        this.closeInterface(); // Закрываем оверлей после добавления
+    }
+
+    // Общий метод для открытия оверлея (без привязки к конкретному ID, пока для добавления)
+    openInterface(id = null) { // id пока не используется для этой версии добавления
+        console.log(`Batura System: Opening generic interface. ID: ${id || 'N/A'}`);
         document.body.classList.add('interface-is-open');
     }
 
     closeInterface() {
         document.body.classList.remove('interface-is-open');
+        // Очищаем поля формы при закрытии, если они были использованы
+        if (this.titleInput) this.titleInput.value = '';
+        if (this.descriptionInput) this.descriptionInput.value = '';
     }
 }
 
